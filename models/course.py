@@ -9,7 +9,7 @@ class CourseModel(db.Model):
     code = db.Column(db.String(100))
     description = db.Column(db.String(100))
 
-    def __init__(self, name, code, description):
+    def __init__(self, name: str, code: str, description: str):
         self.name = name
         self.code = code
         self.description = description
