@@ -4,8 +4,10 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
 
+from resources.admin import AdminRegister, Admin
+from resources.professor import Professor, ProfessorRegister
+from resources.student import Student, StudentRegister
 from security import authenticate, identity
-from resources.user import StudentResource, ProfessorResource, AdminResource
 
 app = Flask(__name__)
 
@@ -37,15 +39,14 @@ api = Api(app)  # This will allow us to very easily. add our resources to the ap
 # This is going to tell our API that the resources we created are now going to be
 # accessible via our API
 
-# POST
-api.add_resource(StudentResource, '/regstudent')
-api.add_resource(ProfessorResource, '/regprofessor')
-api.add_resource(AdminResource, '/regadmin')
 
-# GET resource
-api.add_resource(StudentResource, '/students/<string:name>')
-api.add_resource(ProfessorResource, '/professors/<string:name>')
-api.add_resource(AdminResource, '/admins/<string:name>')
+api.add_resource(Student, '/students/<string:username>')
+api.add_resource(Professor, '/professors/<string:username>')
+api.add_resource(Admin, '/admins/<string:username>')
+
+api.add_resource(StudentRegister, '/students/')
+api.add_resource(ProfessorRegister, '/professors/')
+api.add_resource(AdminRegister, '/admins/')
 
 if __name__ == '__main__':
     from db import db
