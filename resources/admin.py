@@ -69,6 +69,13 @@ class AdminCode(Resource):
         admin.save_to_db()
         return admin.json(), 200
 
+    def delete(self, code):
+        admin_to_delete = AdminModel.find_by_code(code)
+        if admin_to_delete:
+            admin_to_delete.delete_from_db()
+            return {'message': 'Admin deleted.'}, 200
+        return {'message': 'Nothing to delete.'}, 204
+
 
 class AdminUsername(Resource):
 

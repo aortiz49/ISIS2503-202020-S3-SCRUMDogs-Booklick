@@ -29,8 +29,6 @@ class StudentRegister(Resource):
         return {"message": f"Student was created successfully."}, 201
 
 
-
-
 class StudentCode(Resource):
 
     def get(self, code: int):
@@ -70,6 +68,13 @@ class StudentCode(Resource):
 
         student.save_to_db()
         return student.json(), 200
+
+    def delete(self, code):
+        student_to_delete = StudentModel.find_by_code(code)
+        if student_to_delete:
+            student_to_delete.delete_from_db()
+            return {'message': 'Student deleted.'}, 200
+        return {'message': 'Nothing to delete.'}, 204
 
 
 class StudentUsername(Resource):

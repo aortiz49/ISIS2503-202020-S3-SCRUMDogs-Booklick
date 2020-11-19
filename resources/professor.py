@@ -69,6 +69,13 @@ class ProfessorCode(Resource):
         professor.save_to_db()
         return professor.json(), 200
 
+    def delete(self, code):
+        professor_to_delete = ProfessorModel.find_by_code(code)
+        if professor_to_delete:
+            professor_to_delete.delete_from_db()
+            return {'message': 'Professor deleted.'}, 200
+        return {'message': 'Nothing to delete.'}, 204
+
 
 class ProfessorUsername(Resource):
 
