@@ -39,4 +39,4 @@ class Student(Resource):
 
 class StudentList(Resource):
     def get(self):
-        return {'items': [student.json() for student in StudentModel.query.all()]}
+        return {'students': [student.json() for student in StudentModel.query.all()]}

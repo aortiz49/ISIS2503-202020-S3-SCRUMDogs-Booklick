@@ -48,7 +48,7 @@ api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminRegister, '/admins/')
 
-api.add_resource(StudentList, '/studentList/')
+api.add_resource(StudentList, '/studentlist/')
 
 if __name__ == '__main__':
     from db import db
