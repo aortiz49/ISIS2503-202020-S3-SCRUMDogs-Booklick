@@ -26,14 +26,20 @@ parser.add_argument('picture', type=str, required=False)
 parser.add_argument('code', type=int, required=True, help="Must have a code.")
 
 
-class StudentRegister(Resource):
+class StudentResource(Resource):
     global parser
     student_parser = reqparse.RequestParser()
     student_parser.add_argument('semester', type=int, required=True, help="Must have a semester.")
 
+    def get(self, username):
+        student = StudentModel.find_by_username(username)
+        if student:
+            return student.json()
+        return {'message': 'Student not found'}, 404
+
     def post(self):
         data = parser.parse_args()
-        data['semester'] = StudentRegister.student_parser.parse_args()['semester']
+        data['semester'] = StudentResource.student_parser.parse_args()['semester']
 
         if UserModel.find_by_username(data['username']):
             return {"message": f"User with username: {data['username']} already exists!"}, 400
@@ -50,8 +56,14 @@ class StudentRegister(Resource):
         return {"message": f"Student was created successfully."}, 201
 
 
-class ProfessorRegister(Resource):
+class ProfessorResource(Resource):
     global parser
+
+    def get(self, username):
+        professor = ProfessorModel.find_by_username(username)
+        if professor:
+            return professor.json()
+        return {'message': 'Professor not found'}, 404
 
     def post(self):
         data = parser.parse_args()
@@ -71,8 +83,14 @@ class ProfessorRegister(Resource):
         return {"message": f"Professor was created successfully."}, 201
 
 
-class AdminRegister(Resource):
+class AdminResource(Resource):
     global parser
+
+    def get(self, username):
+        professor = AdminModel.find_by_username(username)
+        if professor:
+            return professor.json()
+        return {'message': 'Professor not found'}, 404
 
     def post(self):
         data = parser.parse_args()

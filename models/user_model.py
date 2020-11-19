@@ -57,6 +57,8 @@ class UserModel(db.Model):
 class StudentModel(UserModel):
     __tablename__ = 'student'
     id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
     description = db.Column(db.String(100))
     picture = db.Column(db.String(100))
@@ -66,64 +68,80 @@ class StudentModel(UserModel):
         'polymorphic_identity': 'student',
     }
 
-    def __init__(self, username: str, password: str, email: str,
-                 description: str, picture: str, code: int, semester: int):
-
+    def __init__(self, username: str, email: str, code: int, first_name: str, last_name: str,
+                 password: str, description: str, picture: str, semester: int):
         self.username = username
-        self.password = password
         self.email = email
+        self.code = code
+        self.first_name = first_name
+        self.last_name = last_name
+        self.password = password
         self.description = description
         self.picture = picture
-        self.code = code
         self.semester = semester
 
     def json(self):
-        return {'name': self.name, 'code': self.code, 'semester': self.semester}
+        return {'first_name': self.first_name, 'last_name': self.last_name,
+                'username': self.username, 'email': self.email, 'code': self.code,
+                'password': self.password, 'description': self.description,
+                'picture': self.picture, 'semester': self.semester}
 
 
 class ProfessorModel(UserModel):
-    __tablename__ = 'professor'
-    id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
+    _tablename_ = 'professor'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
     description = db.Column(db.String(100))
     picture = db.Column(db.String(100))
 
-    __mapper_args__ = {
+    _mapper_args_ = {
         'polymorphic_identity': 'professor',
     }
 
-    def __init__(self, username: str, password: str, email: str,
-                 description: str, picture: str, code: int):
+    def _init_(self, username: str, email: str, code: int, first_name: str, last_name: str,
+               password: str, description: str, picture: str):
         self.username = username
-        self.password = password
         self.email = email
+        self.code = code
+        self.first_name = first_name
+        self.last_name = last_name
+        self.password = password
         self.description = description
         self.picture = picture
-        self.code = code
 
     def json(self):
-        return {'name': self.name, 'code': self.code}
+        return {'first_name': self.first_name, 'last_name': self.last_name,
+                'username': self.username, 'email': self.email, 'code': self.code,
+                'password': self.password, 'description': self.description, 'picture': self.picture}
 
 
 class AdminModel(UserModel):
-    __tablename__ = 'admin'
-    id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
+    _tablename_ = 'admin'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
     description = db.Column(db.String(100))
     picture = db.Column(db.String(100))
 
-    __mapper_args__ = {
+    _mapper_args_ = {
         'polymorphic_identity': 'admin',
     }
 
-    def __init__(self, username: str, password: str, email: str,
-                 description: str, picture: str, code: int):
+    def _init_(self, username: str, email: str, code: int, first_name: str, last_name: str,
+               password: str, description: str, picture: str):
         self.username = username
-        self.password = password
         self.email = email
+        self.code = code
+        self.first_name = first_name
+        self.last_name = last_name
+        self.password = password
         self.description = description
         self.picture = picture
-        self.code = code
 
     def json(self):
-        return {'name': self.name, 'code': self.code}
+        return {'first_name': self.first_name, 'last_name': self.last_name,
+                'username': self.username, 'email': self.email, 'code': self.code,
+                'password': self.password, 'description': self.description, 'picture': self.picture}

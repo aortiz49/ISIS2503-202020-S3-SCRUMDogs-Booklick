@@ -5,8 +5,7 @@ from flask_restful import Api
 from flask_jwt import JWT
 
 from security import authenticate, identity
-from resources.user import StudentRegister, ProfessorRegister, AdminRegister
-
+from resources.user import StudentResource, ProfessorResource, AdminResource
 
 app = Flask(__name__)
 
@@ -19,7 +18,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:/
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.secret_key = 'andy'
-
 
 # when we initialize the jwt object, it will use the app and the authenticate and identity
 # functions to allow for the authentication of users:
@@ -39,13 +37,19 @@ api = Api(app)  # This will allow us to very easily. add our resources to the ap
 # This is going to tell our API that the resources we created are now going to be
 # accessible via our API
 
-api.add_resource(StudentRegister, '/regstudent')
-api.add_resource(ProfessorRegister, '/regprofessor')
-api.add_resource(AdminRegister, '/regadmin')
+# POST
+api.add_resource(StudentResource, '/regstudent')
+api.add_resource(ProfessorResource, '/regprofessor')
+api.add_resource(AdminResource, '/regadmin')
 
+# GET resource
+api.add_resource(StudentResource, '/students/<string:name>')
+api.add_resource(ProfessorResource, '/professors/<string:name>')
+api.add_resource(AdminResource, '/admins/<string:name>')
 
 if __name__ == '__main__':
     from db import db
+
     db.init_app(app)
 
     if app.config['DEBUG']:
