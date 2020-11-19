@@ -92,23 +92,26 @@ class StudentCode(Resource):
 class StudentRegCourse(Resource):
 
     def post(self, code):
-        print(f"############### {code}")
+
         parser = reqparse.RequestParser()
         parser.add_argument('course_code', type=str, required=True)
 
         course_code = parser.parse_args()['course_code']
-        print(f"############### {course_code}")
 
+        # if course and student exist, add the cours
         course = CourseModel.find_by_code(course_code)
-        print(f"############### {course}")
         if course:
             student = UserModel.find_by_code(code)
             if student:
                 print(list(student.courses))
 
+                #makee sure the course isn't already added
+                if course in student.courses:
+                    return {"message": f"Course {course.code} already added."}, 200
+
                 course.students.append(student)
                 student.save_to_db()
-                return {"message": "Course added successfully."}
+                return {"message": "Course added successfully."}, 201
 
             return {"message": f"Student {code} does not exist"}, 404
         return {"message": f"course {course_code} does not exist"}, 404
