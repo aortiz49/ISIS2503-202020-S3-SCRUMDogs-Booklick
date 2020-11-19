@@ -21,6 +21,7 @@ class CourseModel(db.Model):
     def find_by_name(cls, name: str):
         return cls.query.filter_by(name=name).first()
 
+
     @classmethod
     def find_by_code(cls, code: str):
         return cls.query.filter_by(code=code).first()

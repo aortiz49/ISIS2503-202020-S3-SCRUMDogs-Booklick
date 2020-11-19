@@ -1,5 +1,7 @@
 from flask_restful import Resource, reqparse
+from flask import jsonify
 
+from models.course_model import CourseModel
 from models.user_model import UserModel, StudentModel
 from resources.user_parser import UserParser
 import copy
@@ -86,11 +88,30 @@ class StudentCode(Resource):
             return {'message': 'Student deleted.'}, 200
         return {'message': 'Nothing to delete.'}, 204
 
+
 class StudentRegCourse(Resource):
-    def post(self):
-        pass
 
+    def post(self, code):
+        print(f"############### {code}")
+        parser = reqparse.RequestParser()
+        parser.add_argument('course_code', type=str, required=True)
 
+        course_code = parser.parse_args()['course_code']
+        print(f"############### {course_code}")
+
+        course = CourseModel.find_by_code(course_code)
+        print(f"############### {course}")
+        if course:
+            student = UserModel.find_by_code(code)
+            if student:
+                print(list(student.courses))
+
+                course.students.append(student)
+                student.save_to_db()
+                return {"message": "Course added successfully."}
+
+            return {"message": f"Student {code} does not exist"}, 404
+        return {"message": f"course {course_code} does not exist"}, 404
 
 
 class StudentUsername(Resource):
@@ -106,3 +127,10 @@ class StudentUsername(Resource):
 class StudentList(Resource):
     def get(self):
         return {'students': [student.json() for student in StudentModel.query.all()]}
+
+
+class StudentCoursesList(Resource):
+    def get(self, code):
+        student = StudentModel.find_by_code(code)
+
+        return {"courses": [course.json() for course in student.courses]}

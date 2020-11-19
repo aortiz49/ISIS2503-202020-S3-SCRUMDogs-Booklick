@@ -2,8 +2,7 @@ import copy
 
 from flask_restful import Resource, reqparse
 
-from models.course import CourseModel
-from resources.user_parser import UserParser
+from models.course_model import CourseModel
 
 
 class CourseRegister(Resource):

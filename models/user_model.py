@@ -69,7 +69,8 @@ class StudentModel(UserModel):
     picture = db.Column(db.String(100))
     semester = db.Column(db.Integer)
     courses = db.relationship("CourseModel",
-                              secondary=association_table)
+                              secondary=association_table,
+                              backref=db.backref('students', lazy=True))
 
     __mapper_args__ = {
         'polymorphic_identity': 'student',
