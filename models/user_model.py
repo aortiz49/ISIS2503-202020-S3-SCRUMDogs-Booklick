@@ -12,6 +12,11 @@
 
 from db import db
 
+association_table = db.Table('student_courses', db.Model.metadata,
+                             db.Column('student_id', db.Integer, db.ForeignKey('student.id')),
+                             db.Column('course_id', db.Integer, db.ForeignKey('course.id'))
+                             )
+
 
 class UserModel(db.Model):
     __tablename__ = 'booklick_user'
@@ -19,7 +24,7 @@ class UserModel(db.Model):
     username = db.Column(db.String(100))
     email = db.Column(db.String(100))
     code = db.Column(db.Integer)
-    type = db.Column(db.String(50))
+    type = db.Column(db.String(100))
 
     __mapper_args__ = {
         'polymorphic_identity': 'booklick_user',
@@ -60,9 +65,11 @@ class StudentModel(UserModel):
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
-    description = db.Column(db.String(100))
+    description = db.Column(db.String(500))
     picture = db.Column(db.String(100))
     semester = db.Column(db.Integer)
+    courses = db.relationship("CourseModel",
+                              secondary=association_table)
 
     __mapper_args__ = {
         'polymorphic_identity': 'student',
@@ -93,7 +100,7 @@ class ProfessorModel(UserModel):
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
-    description = db.Column(db.String(100))
+    description = db.Column(db.String(500))
     picture = db.Column(db.String(100))
 
     _mapper_args_ = {

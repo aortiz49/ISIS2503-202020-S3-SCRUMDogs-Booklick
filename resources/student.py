@@ -86,6 +86,12 @@ class StudentCode(Resource):
             return {'message': 'Student deleted.'}, 200
         return {'message': 'Nothing to delete.'}, 204
 
+class StudentRegCourse(Resource):
+    def post(self):
+        pass
+
+
+
 
 class StudentUsername(Resource):
 

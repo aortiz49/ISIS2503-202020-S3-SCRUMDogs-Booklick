@@ -59,7 +59,8 @@ api.add_resource(CourseList, '/courselist/')
 api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminRegister, '/admins/')
-api.add_resource(CourseRegister, '/courses/')
+api.add_resource(CourseRegister, '/courses/') #ISIS2503
+
 
 if __name__ == '__main__':
     from db import db
