@@ -7,7 +7,7 @@ class CourseModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     code = db.Column(db.String(100))
-    description = db.Column(db.String(100))
+    description = db.Column(db.String(500))
 
     def __init__(self, name: str, code: str, description: str):
         self.name = name
