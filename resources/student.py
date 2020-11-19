@@ -28,29 +28,48 @@ class StudentRegister(Resource):
 
         return {"message": f"Student was created successfully."}, 201
 
-    def put(self, username):
-        data = UserParser.parser.parse_args()
 
-        # item = StudentModel.find_by_code(name)
-
-        # if item is None:
-        #     item = ItemModel(name, **data)
-        # else:
-        #     item.price = data['price']
-
-        item.save_to_db()
-
-        return item.json()
 
 
 class StudentCode(Resource):
 
     def get(self, code: int):
         # only search students
-        student = StudentModel.find_by_code(int(code))
+        student = StudentModel.find_by_code(code)
         if student:
             return student.json(), 200
         return {'message': 'Student not found.'}, 404
+
+    def put(self, code):
+
+        # This parser will be used to update fields that can me modifiable
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type=str, required=False)
+        parser.add_argument('first_name', type=str, required=False)
+        parser.add_argument('last_name', type=str, required=False)
+        parser.add_argument('description', type=str, required=False)
+        parser.add_argument('picture', type=str, required=False)
+
+        data = parser.parse_args()
+        student = StudentModel.find_by_code(code)
+
+        if student is None:
+            # If the student isn't found, create a new student using the user parser
+            data1 = UserParser.parser.parse_args()
+            data1['semester'] = StudentRegister.student_parser.parse_args()['semester']
+
+            student = StudentModel(**data1)
+            student.save_to_db()
+            return student.json(), 201
+
+        student.username = data['username']
+        student.first_name = data['first_name']
+        student.last_name = data['last_name']
+        student.description = data['description']
+        student.picture = data['picture']
+
+        student.save_to_db()
+        return student.json(), 200
 
 
 class StudentUsername(Resource):

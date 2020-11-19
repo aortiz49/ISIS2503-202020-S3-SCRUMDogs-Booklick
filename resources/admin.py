@@ -1,4 +1,4 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from models.user_model import AdminModel, UserModel
 from resources.user_parser import UserParser
@@ -34,10 +34,40 @@ class AdminCode(Resource):
 
     def get(self, code: int):
         # only search admins
-        admin = AdminModel.find_by_code(int(code))
+        admin = AdminModel.find_by_code(code)
         if admin:
             return admin.json(), 200
         return {'message': 'Admin not found.'}, 404
+
+    def put(self, code):
+
+        # This parser will be used to update fields that can me modifiable
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type=str, required=False)
+        parser.add_argument('first_name', type=str, required=False)
+        parser.add_argument('last_name', type=str, required=False)
+        parser.add_argument('description', type=str, required=False)
+        parser.add_argument('picture', type=str, required=False)
+
+        data = parser.parse_args()
+        admin = AdminModel.find_by_code(code)
+
+        if admin is None:
+            # If the admin isn't found, create a new admin using the user parser
+            data1 = UserParser.parser.parse_args()
+
+            admin = AdminModel(**data1)
+            admin.save_to_db()
+            return admin.json(), 201
+
+        admin.username = data['username']
+        admin.first_name = data['first_name']
+        admin.last_name = data['last_name']
+        admin.description = data['description']
+        admin.picture = data['picture']
+
+        admin.save_to_db()
+        return admin.json(), 200
 
 
 class AdminUsername(Resource):

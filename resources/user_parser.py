@@ -16,7 +16,6 @@ from flask_restful import reqparse
 
 class UserParser:
     parser = reqparse.RequestParser()
-
     parser.add_argument('username', type=str, required=True, help="Must have a username.")
     parser.add_argument('password', type=str, required=True, help="Must have a password.")
     parser.add_argument('email', type=str, required=True, help="Must have an email.")
