@@ -5,6 +5,7 @@ from flask_restful import Api
 from flask_jwt import JWT
 
 from resources.admin import AdminRegister, AdminList, AdminUsername, AdminCode
+from resources.course import CourseRegister, CourseCode, CourseList
 from resources.professor import ProfessorRegister, ProfessorList, ProfessorUsername, ProfessorCode
 from resources.student import StudentRegister, StudentList, StudentUsername, StudentCode
 from security import authenticate, identity
@@ -42,16 +43,23 @@ api = Api(app)  # This will allow us to very easily. add our resources to the ap
 
 api.add_resource(StudentUsername, '/students/<string:username>')
 api.add_resource(StudentCode, '/students/<int:code>')
+api.add_resource(StudentList, '/studentlist/')
+
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
 api.add_resource(ProfessorCode, '/professors/<int:code>')
+api.add_resource(ProfessorList, '/professorlist/')
+
 api.add_resource(AdminUsername, '/admins/<string:username>')
 api.add_resource(AdminCode, '/admins/<int:code>')
+api.add_resource(AdminList, '/adminlist/')
+
+api.add_resource(CourseCode, '/courses/<string:code>')
+api.add_resource(CourseList, '/courselist/')
+
 api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminRegister, '/admins/')
-api.add_resource(StudentList, '/studentlist/')
-api.add_resource(ProfessorList, '/professorlist/')
-api.add_resource(AdminList, '/adminlist/')
+api.add_resource(CourseRegister, '/courses/')
 
 if __name__ == '__main__':
     from db import db

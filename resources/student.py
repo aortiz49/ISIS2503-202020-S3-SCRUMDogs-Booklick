@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 
 from models.user_model import UserModel, StudentModel
 from resources.user_parser import UserParser
+import copy
 
 
 class StudentRegister(Resource):
@@ -15,13 +16,13 @@ class StudentRegister(Resource):
         data['semester'] = StudentRegister.student_parser.parse_args()['semester']
 
         if UserModel.find_by_username(data['username']):
-            return {"message": f"User with username: {data['username']} already exists!"}, 400
+            return {"message": f"User with username: {data['username']} already exists."}, 400
 
         if UserModel.find_by_code(data['code']):
-            return {"message": f"User with code: {data['code']} already exists!"}, 400
+            return {"message": f"User with code: {data['code']} already exists."}, 400
 
         if UserModel.find_by_email(data['email']):
-            return {"message": f"User with email: {data['email']} already exists!"}, 400
+            return {"message": f"User with email: {data['email']} already exists."}, 400
 
         user = StudentModel(**data)  # unpacking the dictionary
         user.save_to_db()
@@ -48,17 +49,26 @@ class StudentCode(Resource):
         parser.add_argument('description', type=str, required=False)
         parser.add_argument('picture', type=str, required=False)
 
-        data = parser.parse_args()
         student = StudentModel.find_by_code(code)
+        data = parser.parse_args()
 
         if student is None:
-            # If the student isn't found, create a new student using the user parser
-            data1 = UserParser.parser.parse_args()
+            # If the student isn't found, create a new student using the User parser
+
+            # Creates a copy of the User parser and removes the 'code' argument so that
+            #   it is no longer necessary in the request body
+            put_parser = copy.copy(UserParser.parser)
+            put_parser.remove_argument('code')
+
+            data1 = put_parser.parse_args()
+
+            # add 'code' and 'semester' to the data1 dictionary so that it can unpacked properly
+            data1['code'] = code
             data1['semester'] = StudentRegister.student_parser.parse_args()['semester']
 
-            student = StudentModel(**data1)
-            student.save_to_db()
-            return student.json(), 201
+            admin = StudentModel(**data1)
+            admin.save_to_db()
+            return admin.json(), 201
 
         student.username = data['username']
         student.first_name = data['first_name']
