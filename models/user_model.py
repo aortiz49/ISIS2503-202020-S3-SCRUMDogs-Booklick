@@ -89,7 +89,7 @@ class StudentModel(UserModel):
 
 class ProfessorModel(UserModel):
     _tablename_ = 'professor'
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
@@ -119,7 +119,7 @@ class ProfessorModel(UserModel):
 
 class AdminModel(UserModel):
     _tablename_ = 'admin'
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
