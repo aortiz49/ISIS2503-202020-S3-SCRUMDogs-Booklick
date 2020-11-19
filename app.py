@@ -6,7 +6,7 @@ from flask_jwt import JWT
 
 from resources.admin import AdminRegister, Admin
 from resources.professor import Professor, ProfessorRegister
-from resources.student import Student, StudentRegister
+from resources.student import Student, StudentRegister, StudentList
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -47,6 +47,8 @@ api.add_resource(Admin, '/admins/<string:username>')
 api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminRegister, '/admins/')
+
+api.add_resource(StudentList, '/studentList/')
 
 if __name__ == '__main__':
     from db import db
