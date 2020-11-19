@@ -14,7 +14,7 @@ from db import db
 
 
 class UserModel(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'booklick_user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100))
     email = db.Column(db.String(100))
@@ -22,7 +22,7 @@ class UserModel(db.Model):
     type = db.Column(db.String(50))
 
     __mapper_args__ = {
-        'polymorphic_identity': 'user',
+        'polymorphic_identity': 'booklick_user',
         'polymorphic_on': type
     }
 
@@ -56,7 +56,7 @@ class UserModel(db.Model):
 
 class StudentModel(UserModel):
     __tablename__ = 'student'
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     password = db.Column(db.String(100))
     description = db.Column(db.String(100))
     picture = db.Column(db.String(100))
@@ -83,7 +83,7 @@ class StudentModel(UserModel):
 
 class ProfessorModel(UserModel):
     __tablename__ = 'professor'
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     password = db.Column(db.String(100))
     description = db.Column(db.String(100))
     picture = db.Column(db.String(100))
@@ -107,7 +107,7 @@ class ProfessorModel(UserModel):
 
 class AdminModel(UserModel):
     __tablename__ = 'admin'
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     password = db.Column(db.String(100))
     description = db.Column(db.String(100))
     picture = db.Column(db.String(100))
