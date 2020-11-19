@@ -37,3 +37,8 @@ class Admin(Resource):
         if admin:
             return admin.json()
         return {'message': 'admin not found'}, 404
+
+
+class AdminList(Resource):
+    def get(self):
+        return {'admins': [admin.json() for admin in AdminModel.query.all()]}

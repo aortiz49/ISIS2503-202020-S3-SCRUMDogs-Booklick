@@ -5,13 +5,13 @@ from resources.user_parser import UserParser
 
 
 class StudentRegister(Resource):
-
+    student_parser = reqparse.RequestParser()
+    student_parser.add_argument('semester', type=int, required=True,
+                                help="Must have a semester.")
     def post(self):
-        student_parser = reqparse.RequestParser()
-        student_parser.add_argument('semester', type=int, required=True,
-                                    help="Must have a semester.")
+
         data = UserParser.parser.parse_args()
-        data['semester'] = student_parser.parse_args()['semester']
+        data['semester'] = StudentRegister.student_parser.parse_args()['semester']
 
         if UserModel.find_by_username(data['username']):
             return {"message": f"User with username: {data['username']} already exists!"}, 400
@@ -31,10 +31,11 @@ class StudentRegister(Resource):
 class Student(Resource):
 
     def get(self, username):
-        professor = StudentModel.find_by_username(username)
-        if professor:
-            return professor.json()
-        return {'message': 'Professor not found'}, 404
+        # only search students
+        student = StudentModel.find_by_username(username)
+        if student:
+            return student.json()
+        return {'message': 'Student not found'}, 404
 
 
 class StudentList(Resource):

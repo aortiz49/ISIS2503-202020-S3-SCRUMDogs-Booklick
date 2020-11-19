@@ -4,8 +4,8 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
 
-from resources.admin import AdminRegister, Admin
-from resources.professor import Professor, ProfessorRegister
+from resources.admin import AdminRegister, Admin, AdminList
+from resources.professor import Professor, ProfessorRegister, ProfessorList
 from resources.student import Student, StudentRegister, StudentList
 from security import authenticate, identity
 
@@ -49,6 +49,8 @@ api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminRegister, '/admins/')
 
 api.add_resource(StudentList, '/studentlist/')
+api.add_resource(ProfessorList, '/professorlist/')
+api.add_resource(AdminList, '/adminlist/')
 
 if __name__ == '__main__':
     from db import db

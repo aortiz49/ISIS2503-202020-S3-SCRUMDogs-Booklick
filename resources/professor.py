@@ -37,3 +37,8 @@ class Professor(Resource):
         if professor:
             return professor.json()
         return {'message': 'Professor not found'}, 404
+
+
+class ProfessorList(Resource):
+    def get(self):
+        return {'professors': [professor.json() for professor in ProfessorModel.query.all()]}
