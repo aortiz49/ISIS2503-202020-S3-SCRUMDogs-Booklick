@@ -8,7 +8,7 @@ from resources.admin import AdminRegister, AdminList, AdminUsername, AdminCode
 from resources.course import CourseRegister, CourseCode, CourseList
 from resources.professor import ProfessorRegister, ProfessorList, ProfessorUsername, ProfessorCode
 from resources.student import StudentRegister, StudentList, StudentUsername, StudentCode, \
-    StudentRegCourse, StudentCoursesList
+    StudentRegCourse, StudentCoursesList, StudentCourse
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -46,6 +46,7 @@ api.add_resource(StudentUsername, '/students/<string:username>')
 api.add_resource(StudentCode, '/students/<int:code>')
 api.add_resource(StudentList, '/studentlist/')
 api.add_resource(StudentCoursesList, '/students/<int:code>/courses/')
+api.add_resource(StudentCourse, '/students/<int:code>/courses/<int:course_code>')
 
 # Dish.restaurants.any(id=thisrestaurant.id)
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
@@ -56,7 +57,7 @@ api.add_resource(AdminUsername, '/admins/<string:username>')
 api.add_resource(AdminCode, '/admins/<int:code>')
 api.add_resource(AdminList, '/adminlist/')
 
-api.add_resource(CourseCode, '/courses/<string:code>')
+api.add_resource(CourseCode, '/courses/<string:course_code>')
 api.add_resource(CourseList, '/courselist/')
 
 api.add_resource(StudentRegister, '/students/')

@@ -90,31 +90,47 @@ class StudentCode(Resource):
 
 
 class StudentRegCourse(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('course_code', type=str, required=True)
 
     def post(self, code):
 
-        parser = reqparse.RequestParser()
-        parser.add_argument('course_code', type=str, required=True)
+        course_code = StudentRegCourse.parser.parse_args()['course_code']
 
-        course_code = parser.parse_args()['course_code']
-
-        # if course and student exist, add the cours
         course = CourseModel.find_by_code(course_code)
         if course:
             student = UserModel.find_by_code(code)
             if student:
-                print(list(student.courses))
 
-                #makee sure the course isn't already added
+                # make sure the course isn't already added
                 if course in student.courses:
                     return {"message": f"Course {course.code} already added."}, 200
 
-                course.students.append(student)
+                student.courses.append(course)
+
                 student.save_to_db()
                 return {"message": "Course added successfully."}, 201
 
-            return {"message": f"Student {code} does not exist"}, 404
-        return {"message": f"course {course_code} does not exist"}, 404
+            return {"message": f"Student {code} does not exist."}, 404
+        return {"message": f"course {course_code} does not exist."}, 404
+
+
+class StudentCourse(Resource):
+
+    def delete(self, code: str, course_code: str):
+        # if course and student exist, add the cours
+        course = CourseModel.find_by_code(course_code)
+
+        if course:
+            student = UserModel.find_by_code(code)
+            if student:
+                # make sure the course isn't already removed
+                if course in student.courses:
+                    student.courses.remove(course)
+                    return {"message": f"Course {course.code} removed."}, 200
+                return {"message": f"Student {code} not in {course_code}"}, 404
+            return {"message": f"Student {code} does not exist."}, 404
+        return {"message": f"Course {course_code} does not exist."}, 404
 
 
 class StudentUsername(Resource):
@@ -136,4 +152,9 @@ class StudentCoursesList(Resource):
     def get(self, code):
         student = StudentModel.find_by_code(code)
 
-        return {"courses": [course.json() for course in student.courses]}
+        if student:
+            return {"message": [course.json() for course in student.courses]}
+
+        return {"message": f"Student {code} does not exist."}, 404
+
+
