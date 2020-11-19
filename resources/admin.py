@@ -30,13 +30,24 @@ class AdminRegister(Resource):
         return {"message": f"admin was created successfully."}, 201
 
 
-class Admin(Resource):
+class AdminCode(Resource):
 
-    def get(self, username):
+    def get(self, code: int):
+        # only search admins
+        admin = AdminModel.find_by_code(int(code))
+        if admin:
+            return admin.json(), 200
+        return {'message': 'Admin not found.'}, 404
+
+
+class AdminUsername(Resource):
+
+    def get(self, username: str):
+        # only search admins
         admin = AdminModel.find_by_username(username)
         if admin:
             return admin.json()
-        return {'message': 'admin not found'}, 404
+        return {'message': 'Admin not found.'}, 404
 
 
 class AdminList(Resource):

@@ -30,13 +30,24 @@ class ProfessorRegister(Resource):
         return {"message": f"Professor was created successfully."}, 201
 
 
-class Professor(Resource):
+class ProfessorCode(Resource):
 
-    def get(self, username):
+    def get(self, code: int):
+        # only search professors
+        professor = ProfessorModel.find_by_code(int(code))
+        if professor:
+            return professor.json(), 200
+        return {'message': 'Professor not found.'}, 404
+
+
+class ProfessorUsername(Resource):
+
+    def get(self, username: str):
+        # only search students
         professor = ProfessorModel.find_by_username(username)
         if professor:
             return professor.json()
-        return {'message': 'Professor not found'}, 404
+        return {'message': 'Professor not found.'}, 404
 
 
 class ProfessorList(Resource):

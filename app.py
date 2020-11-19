@@ -4,9 +4,9 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
 
-from resources.admin import AdminRegister, Admin, AdminList
-from resources.professor import Professor, ProfessorRegister, ProfessorList
-from resources.student import Student, StudentRegister, StudentList
+from resources.admin import AdminRegister, AdminList, AdminUsername, AdminCode
+from resources.professor import ProfessorRegister, ProfessorList, ProfessorUsername, ProfessorCode
+from resources.student import StudentRegister, StudentList, StudentUsername, StudentCode
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -40,14 +40,15 @@ api = Api(app)  # This will allow us to very easily. add our resources to the ap
 # accessible via our API
 
 
-api.add_resource(Student, '/students/<string:username>')
-api.add_resource(Professor, '/professors/<string:username>')
-api.add_resource(Admin, '/admins/<string:username>')
-
+api.add_resource(StudentUsername, '/students/<string:username>')
+api.add_resource(StudentCode, '/students/<int:code>')
+api.add_resource(ProfessorUsername, '/professors/<string:username>')
+api.add_resource(ProfessorCode, '/professors/<int:code>')
+api.add_resource(AdminUsername, '/admins/<string:username>')
+api.add_resource(AdminCode, '/admins/<int:code>')
 api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminRegister, '/admins/')
-
 api.add_resource(StudentList, '/studentlist/')
 api.add_resource(ProfessorList, '/professorlist/')
 api.add_resource(AdminList, '/adminlist/')

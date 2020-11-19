@@ -8,6 +8,7 @@ class StudentRegister(Resource):
     student_parser = reqparse.RequestParser()
     student_parser.add_argument('semester', type=int, required=True,
                                 help="Must have a semester.")
+
     def post(self):
 
         data = UserParser.parser.parse_args()
@@ -27,15 +28,39 @@ class StudentRegister(Resource):
 
         return {"message": f"Student was created successfully."}, 201
 
+    def put(self, username):
+        data = UserParser.parser.parse_args()
 
-class Student(Resource):
+        # item = StudentModel.find_by_code(name)
 
-    def get(self, username):
+        # if item is None:
+        #     item = ItemModel(name, **data)
+        # else:
+        #     item.price = data['price']
+
+        item.save_to_db()
+
+        return item.json()
+
+
+class StudentCode(Resource):
+
+    def get(self, code: int):
+        # only search students
+        student = StudentModel.find_by_code(int(code))
+        if student:
+            return student.json(), 200
+        return {'message': 'Student not found.'}, 404
+
+
+class StudentUsername(Resource):
+
+    def get(self, username: str):
         # only search students
         student = StudentModel.find_by_username(username)
         if student:
-            return student.json()
-        return {'message': 'Student not found'}, 404
+            return student.json(), 200
+        return {'message': 'Student not found.'}, 404
 
 
 class StudentList(Resource):
