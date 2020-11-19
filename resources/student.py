@@ -127,7 +127,7 @@ class StudentCourse(Resource):
                 # make sure the course isn't already removed
                 if course in student.courses:
                     student.courses.remove(course)
-                    return {"message": f"Course {course.code} removed."}, 200
+                    return {"message": f"Course {course.course_code} removed."}, 200
                 return {"message": f"Student {code} not in {course_code}"}, 404
             return {"message": f"Student {code} does not exist."}, 404
         return {"message": f"Course {course_code} does not exist."}, 404
@@ -154,7 +154,6 @@ class StudentCoursesList(Resource):
 
         if student:
             return {"message": [course.json() for course in student.courses]}
-
         return {"message": f"Student {code} does not exist."}, 404
 
 

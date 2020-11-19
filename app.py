@@ -46,7 +46,7 @@ api.add_resource(StudentUsername, '/students/<string:username>')
 api.add_resource(StudentCode, '/students/<int:code>')
 api.add_resource(StudentList, '/studentlist/')
 api.add_resource(StudentCoursesList, '/students/<int:code>/courses/')
-api.add_resource(StudentCourse, '/students/<int:code>/courses/<int:course_code>')
+api.add_resource(StudentCourse, '/students/<int:code>/courses/<string:course_code>')
 
 # Dish.restaurants.any(id=thisrestaurant.id)
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
