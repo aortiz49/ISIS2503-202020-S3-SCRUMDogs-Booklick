@@ -15,6 +15,8 @@ class CourseRegister(Resource):
     def post(self):
         data = CourseRegister.parser.parse_args()
 
+        print(type(data['code']))
+
         if CourseModel.find_by_code(data['code']):
             return {"message": f"Course with code: {data['code']} already exists."}, \
                    400
