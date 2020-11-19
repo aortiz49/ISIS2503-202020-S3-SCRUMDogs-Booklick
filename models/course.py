@@ -6,7 +6,7 @@ class CourseModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    code = db.Column(db.Integer)
+    code = db.Column(db.String(100))
     description = db.Column(db.String(100))
 
     def __init__(self, name, code, description):
@@ -18,11 +18,11 @@ class CourseModel(db.Model):
         return {'name': self.name, 'code': self.code, 'description': self.description}
 
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_name(cls, name: str):
         return cls.query.filter_by(name=name).first()
 
     @classmethod
-    def find_by_code(cls, code):
+    def find_by_code(cls, code: str):
         return cls.query.filter_by(code=code).first()
 
     def save_to_db(self):

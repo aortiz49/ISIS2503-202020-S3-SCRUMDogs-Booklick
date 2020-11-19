@@ -35,7 +35,7 @@ class AdminCode(Resource):
             return admin.json(), 200
         return {'message': 'Admin not found.'}, 404
 
-    def put(self, code):
+    def put(self, code: int):
 
         # This parser will be used to update fields that can me modifiable
         parser = reqparse.RequestParser()
@@ -72,7 +72,7 @@ class AdminCode(Resource):
         admin.save_to_db()
         return admin.json(), 200
 
-    def delete(self, code):
+    def delete(self, code: int):
         admin_to_delete = AdminModel.find_by_code(code)
         if admin_to_delete:
             admin_to_delete.delete_from_db()

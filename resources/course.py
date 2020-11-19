@@ -27,14 +27,14 @@ class CourseRegister(Resource):
 
 class CourseCode(Resource):
 
-    def get(self, code: int):
+    def get(self, code: str):
         # only search courses
         course = CourseModel.find_by_code(code)
         if course:
             return course.json(), 200
         return {'message': 'Course not found.'}, 404
 
-    def put(self, code):
+    def put(self, code: str):
 
         # This parser will be used to update fields that can me modifiable
         parser = reqparse.RequestParser()
@@ -65,7 +65,7 @@ class CourseCode(Resource):
         course.save_to_db()
         return course.json(), 200
 
-    def delete(self, code):
+    def delete(self, code: str):
         course_to_delete = CourseModel.find_by_code(code)
         if course_to_delete:
             course_to_delete.delete_from_db()

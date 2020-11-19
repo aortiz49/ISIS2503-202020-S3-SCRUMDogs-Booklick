@@ -35,7 +35,7 @@ class ProfessorCode(Resource):
             return professor.json(), 200
         return {'message': 'Professor not found.'}, 404
 
-    def put(self, code):
+    def put(self, code: int):
 
         # This parser will be used to update fields that can me modifiable
         parser = reqparse.RequestParser()
