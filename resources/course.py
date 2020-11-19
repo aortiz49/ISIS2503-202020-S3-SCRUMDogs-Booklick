@@ -49,7 +49,7 @@ class CourseCode(Resource):
 
             # Creates a copy of the Course parser and removes the 'code' argument so that
             #   it is no longer necessary in the request body
-            put_parser = copy.copy(CourseModel.parser)
+            put_parser = copy.copy(parser)
             put_parser.remove_argument('code')
 
             data1 = put_parser.parse_args()
