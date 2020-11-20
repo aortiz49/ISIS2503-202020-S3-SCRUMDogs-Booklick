@@ -4,7 +4,8 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
 
-from resources.admin import AdminRegister, AdminsList, AdminUsername, AdminCode
+from resources.admin import AdminRegister, AdminsList, AdminUsername, AdminCode, AdminRegBooklist, \
+    AdminDeleteBooklist, AdminBooklistsList
 from resources.booklist import BooklistRegister, BooklistName, BooklistList
 from resources.course import CourseRegister, CourseCode, CoursesList
 from resources.major import MajorRegister, MajorName, MajorsList
@@ -72,6 +73,9 @@ api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminUsername, '/admins/<string:username>')
 api.add_resource(AdminCode, '/admins/<int:code>')
 api.add_resource(AdminsList, '/adminlist/')
+api.add_resource(AdminRegBooklist, '/admins/<int:code>/booklists/')
+api.add_resource(AdminDeleteBooklist, '/admins/<int:code>/booklists/<string:name>')
+api.add_resource(AdminBooklistsList, '/admins/<int:code>/booklists/')
 api.add_resource(AdminRegister, '/admins/')
 api.add_resource(CourseRegister, '/courses/')
 api.add_resource(CourseCode, '/courses/<string:course_code>')

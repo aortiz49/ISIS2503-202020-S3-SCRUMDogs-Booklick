@@ -205,3 +205,4 @@ class ProfessorBooklistsList(Resource):
         if professor:
             return {"message": [booklist.json() for booklist in professor.booklists]}
         return {"message": f"Professor {code} does not exist."}, 404
+

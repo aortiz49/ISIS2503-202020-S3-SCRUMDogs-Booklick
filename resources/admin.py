@@ -2,6 +2,7 @@ import copy
 
 from flask_restful import Resource, reqparse
 
+from models.booklist_model import BooklistModel
 from models.user_model import AdminModel, UserModel
 from resources.user_parser import UserParser
 
@@ -53,7 +54,7 @@ class AdminCode(Resource):
 
         if not data['username'][0].isalpha():
             return {'message': 'Invalid username.'}, 400
-        
+
         if admin is None:
             # If the admin isn't found, create a new admin using the user parser
 
@@ -86,6 +87,59 @@ class AdminCode(Resource):
         return {}, 204
 
 
+class AdminBooklistsList(Resource):
+    def get(self, code):
+        admin = AdminModel.find_by_code(code)
+
+        if admin:
+            return {"message": [booklist.json() for booklist in admin.booklists]}
+        return {"message": f"Admin {code} does not exist."}, 404
+
+
+class AdminRegBooklist(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', type=str, required=True)
+
+    def post(self, code):
+
+        name = AdminRegBooklist.parser.parse_args()['name']
+
+        booklist = BooklistModel.find_by_name(name)
+        if booklist:
+            Admin = AdminModel.find_by_code(code)
+            if Admin:
+
+                # make sure the booklist isn't already added
+                if booklist in Admin.booklists:
+                    return {"message": f"Booklist {booklist.name} already added."}, 200
+
+                Admin.booklists.append(booklist)
+                Admin.save_to_db()
+                return {"message": "Booklist added successfully."}, 201
+
+            return {"message": f"Admin {code} does not exist."}, 404
+        return {"message": f"booklist {name} does not exist."}, 404
+
+
+class AdminDeleteBooklist(Resource):
+
+    def delete(self, code: str, name: str):
+        # if booklist and Admin exist, delete the booklist
+        booklist = BooklistModel.find_by_name(name)
+
+        if booklist:
+            admin = AdminModel.find_by_code(code)
+            if admin:
+                # make sure the booklist isn't already removed
+                if booklist in admin.booklists:
+                    admin.booklists.remove(booklist)
+                    admin.save_to_db()
+                    return {"message": f"Booklist {booklist.name} removed."}, 200
+                return {"message": f"Admin {code} not in {booklist}"}, 404
+            return {"message": f"Admin {code} does not exist."}, 404
+        return {"message": f"Booklist {booklist} does not exist."}, 404
+
+
 class AdminUsername(Resource):
 
     def get(self, username: str):
@@ -99,3 +153,12 @@ class AdminUsername(Resource):
 class AdminsList(Resource):
     def get(self):
         return {'admins': [admin.json() for admin in AdminModel.query.all()]}
+
+
+class AdminBooklistsList(Resource):
+    def get(self, code):
+        admin = AdminModel.find_by_code(code)
+
+        if admin:
+            return {"message": [booklist.json() for booklist in admin.booklists]}
+        return {"message": f"Admin {code} does not exist."}, 404
