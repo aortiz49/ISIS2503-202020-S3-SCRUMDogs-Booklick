@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify
 
+from models.booklist import BooklistModel
 from models.course_model import CourseModel
 from models.major_model import MajorModel
 from models.user_model import UserModel, StudentModel
@@ -187,6 +188,31 @@ class StudentDeleteMajor(Resource):
         return {"message": f"Course {major} does not exist."}, 404
 
 
+class StudentRegBooklist(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', type=str, required=True)
+
+    def post(self, code):
+
+        name = StudentRegBooklist.parser.parse_args()['name']
+
+        booklist = BooklistModel.find_by_name(name)
+        if booklist:
+            student = StudentModel.find_by_code(code)
+            if student:
+
+                # make sure the booklist isn't already added
+                if booklist in student.booklists:
+                    return {"message": f"Booklist {booklist.name} already added."}, 200
+
+                student.booklists.append(booklist)
+                student.save_to_db()
+                return {"message": "Booklist added successfully."}, 201
+
+            return {"message": f"Student {code} does not exist."}, 404
+        return {"message": f"booklist {name} does not exist."}, 404
+
+
 class StudentUsername(Resource):
 
     def get(self, username: str):
@@ -217,4 +243,13 @@ class StudentMajorsList(Resource):
 
         if student:
             return {"message": [major.json() for major in student.majors]}
+        return {"message": f"Student {code} does not exist."}, 404
+
+
+class StudentBooklistsList(Resource):
+    def get(self, code):
+        student = StudentModel.find_by_code(code)
+
+        if student:
+            return {"message": [booklist.json() for booklist in student.booklists]}
         return {"message": f"Student {code} does not exist."}, 404
