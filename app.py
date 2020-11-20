@@ -50,7 +50,7 @@ def add_claims_to_access_token(user):
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
-    return user.username
+    return user.code
 
 
 # This method will check if a token is blacklisted, and will be called automatically when blacklist is enabled
@@ -106,7 +106,7 @@ def revoked_token_callback():
 
 
 
-
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 @app.route('/protected', methods=['GET'])
 @jwt_required
 def protected():
