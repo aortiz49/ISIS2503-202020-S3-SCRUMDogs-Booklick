@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from flask import jsonify
 
@@ -5,8 +6,9 @@ from models.booklist_model import BooklistModel
 from models.course_model import CourseModel
 from models.major_model import MajorModel
 from models.user_model import UserModel, StudentModel
-from resources.user_parser import UserParser
 import copy
+
+from resources.user_parser import UserParser
 
 
 class StudentRegister(Resource):
@@ -174,7 +176,6 @@ class StudentDeleteMajor(Resource):
     def delete(self, code: str, name: str):
         # if major and student exist, add the major
         major = MajorModel.find_by_name(name)
-
         if major:
             student = StudentModel.find_by_code(code)
             if student:
@@ -262,6 +263,8 @@ class StudentsList(Resource):
 
 
 class StudentCoursesList(Resource):
+
+    @jwt_required
     def get(self, code):
         student = StudentModel.find_by_code(code)
 
@@ -271,6 +274,8 @@ class StudentCoursesList(Resource):
 
 
 class StudentMajorsList(Resource):
+
+    @jwt_required
     def get(self, code):
         student = StudentModel.find_by_code(code)
 
@@ -280,6 +285,8 @@ class StudentMajorsList(Resource):
 
 
 class StudentBooklistsList(Resource):
+
+    @jwt_required
     def get(self, code):
         student = StudentModel.find_by_code(code)
 

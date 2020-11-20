@@ -2,28 +2,42 @@ from db import db
 
 
 class BooklistModel(db.Model):
-    __tablename__ = 'booklist'
+    association_table = db.Table('booklist_contents', db.Model.metadata,
+                                 db.Column('booklists_id', db.Integer,
+                                           db.ForeignKey('booklists.id')),
+                                 db.Column('contents_id', db.Integer, db.ForeignKey('contents.id')),
+                                 )
+    __tablename__ = 'booklists'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    description = db.Column(db.String(500))
-    image = db.Column(db.String(100))
+    name = db.Column(db.String(80))
+    description = db.Column(db.String(80))
+    imageURL = db.Column(db.String(80))
+    contents = db.relationship(
+        "ContentModel", secondary=association_table)
 
     user_id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'))
 
-    def __init__(self, name: str, description: str, image: str):
+    def __init__(self, name, description, imageURL):
         self.name = name
         self.description = description
-        self.image = image
+        self.imageURL = imageURL
 
     def json(self):
-        return {'name': self.name, "description": self.description, "image": self.image}
+        return {
+            'name': self.name,
+            'description': self.description,
+            'imageURL': self.imageURL,
+            'contents': [content.json() for content in self.contents],
+        }
 
     @classmethod
     def find_by_name(cls, name):
-        # we can concatenate filter_by's or add each filter separated by a comma
-        # SELECT * FROM items WHERE name=name LIMIT 1 (returns ItemModel object)
         return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
     def save_to_db(self):
         db.session.add(self)

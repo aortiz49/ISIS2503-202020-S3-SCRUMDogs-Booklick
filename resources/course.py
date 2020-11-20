@@ -1,5 +1,6 @@
 import copy
 
+from flask_cors import cross_origin
 from flask_restful import Resource, reqparse
 
 from models.course_model import CourseModel
@@ -11,13 +12,13 @@ class CourseRegister(Resource):
     parser.add_argument('course_code', type=str, required=True, help="Must have a course code.")
     parser.add_argument('description', type=str, required=True, help="Must have a description.")
 
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def post(self):
         data = CourseRegister.parser.parse_args()
 
         if CourseModel.find_by_code(data['course_code']):
             return {"message": f"Course with course code: {data['course_code']} already "
-                               f"exists."}, \
-                   400
+                               f"exists."}, 400
 
         course = CourseModel(**data)  # unpacking the dictionary
         course.save_to_db()
@@ -27,6 +28,7 @@ class CourseRegister(Resource):
 
 class CourseCode(Resource):
 
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, course_code: str):
         # only search courses
         course = CourseModel.find_by_code(course_code)
@@ -34,6 +36,7 @@ class CourseCode(Resource):
             return course.json(), 200
         return {'message': 'Course not found.'}, 404
 
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def put(self, course_code: str):
 
         # This parser will be used to update fields that can me modifiable
@@ -66,6 +69,7 @@ class CourseCode(Resource):
         course.save_to_db()
         return course.json(), 200
 
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def delete(self, course_code: str):
         course_to_delete = CourseModel.find_by_code(course_code)
         if course_to_delete:
@@ -76,6 +80,7 @@ class CourseCode(Resource):
 
 class CourseName(Resource):
 
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, name: str):
         # only search courses
         course = CourseModel.find_by_name(name)
@@ -85,5 +90,7 @@ class CourseName(Resource):
 
 
 class CoursesList(Resource):
+
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self):
         return {'courses': [course.json() for course in CourseModel.query.all()]}
