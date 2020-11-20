@@ -29,11 +29,8 @@ def about():
     return render_template('index.html')
 
 @app.route('/login')
-def about():
+def login():
     return render_template('login.html')
-
-
-
 
 limiter = Limiter(
     app,
