@@ -5,6 +5,7 @@ from flask_restful import Api
 from flask_jwt import JWT
 
 from resources.admin import AdminRegister, AdminsList, AdminUsername, AdminCode
+from resources.booklist import BooklistRegister, BooklistName, BooklistList
 from resources.course import CourseRegister, CourseCode, CoursesList
 from resources.major import MajorRegister, MajorName, MajorsList
 from resources.professor import ProfessorRegister, ProfessorsList, ProfessorUsername, ProfessorCode, \
@@ -71,6 +72,9 @@ api.add_resource(CoursesList, '/courseslist/')
 api.add_resource(MajorRegister, '/majors/')
 api.add_resource(MajorName, '/majors/<string:name>')
 api.add_resource(MajorsList, '/majorslist/')
+api.add_resource(BooklistRegister, '/booklists/')
+api.add_resource(BooklistName, '/booklists/<string:name>')
+api.add_resource(BooklistList, '/booklistslist/')
 
 if __name__ == '__main__':
     from db import db

@@ -19,6 +19,7 @@ class UserModel(db.Model):
     username = db.Column(db.String(100))
     email = db.Column(db.String(100))
     code = db.Column(db.Integer)
+    booklists = db.relationship("BooklistModel")
     type = db.Column(db.String(100))
 
     __mapper_args__ = {

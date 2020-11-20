@@ -42,9 +42,9 @@ class MajorName(Resource):
         if major is None:
             data1 = parser.parse_args()
 
-            admin = MajorModel(**data1)
-            admin.save_to_db()
-            return admin.json(), 201
+            major = MajorModel(**data1)
+            major.save_to_db()
+            return major.json(), 201
 
         major.name = data['name']
         major.save_to_db()
