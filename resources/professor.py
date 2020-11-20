@@ -11,6 +11,10 @@ class ProfessorRegister(Resource):
     def post(self):
         data = UserParser.parser.parse_args()
 
+        # ensure username is proper
+        if not data['username'][0].isalpha():
+            return {"message": f"Invalid username."}, 400
+
         if UserModel.find_by_username(data['username']):
             return {"message": f"User with username: {data['username']} already exists."}, 400
 
@@ -47,6 +51,9 @@ class ProfessorCode(Resource):
 
         data = parser.parse_args()
         professor = ProfessorModel.find_by_code(code)
+
+        if not data['username'][0].isalpha():
+            return {'message': 'Invalid username.'}, 400
 
         if professor is None:
             # If the professor isn't found, create a new professor using the User parser

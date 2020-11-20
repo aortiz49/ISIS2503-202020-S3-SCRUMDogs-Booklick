@@ -18,6 +18,10 @@ class StudentRegister(Resource):
         data = UserParser.parser.parse_args()
         data['semester'] = StudentRegister.student_parser.parse_args()['semester']
 
+        # ensure username is proper
+        if not data['username'][0].isalpha():
+            return {"message": f"Invalid username."}, 400
+
         if UserModel.find_by_username(data['username']):
             return {"message": f"User with username: {data['username']} already exists."}, 400
 
@@ -54,6 +58,9 @@ class StudentCode(Resource):
 
         student = StudentModel.find_by_code(code)
         data = parser.parse_args()
+
+        if not data['username'][0].isalpha():
+            return {'message': 'Invalid username.'}, 400
 
         if student is None:
             # If the student isn't found, create a new student using the User parser

@@ -11,6 +11,9 @@ class AdminRegister(Resource):
     def post(self):
         data = UserParser.parser.parse_args()
 
+        if not data['username'][0].isalpha():
+            return {'message': 'Invalid username.'}, 400
+
         if UserModel.find_by_username(data['username']):
             return {"message": f"User with username: {data['username']} already exists."}, 400
 
@@ -48,6 +51,9 @@ class AdminCode(Resource):
         data = parser.parse_args()
         admin = AdminModel.find_by_code(code)
 
+        if not data['username'][0].isalpha():
+            return {'message': 'Invalid username.'}, 400
+        
         if admin is None:
             # If the admin isn't found, create a new admin using the user parser
 
