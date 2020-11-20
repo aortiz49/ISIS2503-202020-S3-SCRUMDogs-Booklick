@@ -23,10 +23,6 @@ app.secret_key = 'jose'
 api = Api(app)
 app.app_context().push()
 
-@app.route('/')
-def about():
-    return render_template('index.html')
-
 
 
 limiter = Limiter(
