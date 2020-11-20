@@ -121,7 +121,7 @@ class AdminRegBooklist(Resource):
         return {"message": f"booklist {name} does not exist."}, 404
 
 
-class AdminDeleteBooklist(Resource):
+class AdminBooklist(Resource):
 
     def delete(self, code: str, name: str):
         # if booklist and Admin exist, delete the booklist
@@ -139,6 +139,20 @@ class AdminDeleteBooklist(Resource):
             return {"message": f"Admin {code} does not exist."}, 404
         return {"message": f"Booklist {booklist} does not exist."}, 404
 
+    def get(self, code: str, name: str):
+        # if booklist and admin exist, delete the booklist
+        booklist = BooklistModel.find_by_name(name)
+        if booklist:
+            admin = AdminModel.find_by_code(code)
+            if admin:
+                # make sure the booklist isn't already removed
+                if booklist in admin.booklists:
+                    print(f"#######{booklist.json()}")
+                    return {"booklist": booklist.json()}, 200
+                return {"message": f"Booklist {booklist.name} not found."}, 404
+            return {"message": f"Admin {code} does not exist."}, 404
+        return {"message": f"Booklist {booklist} does not exist."}, 404
+
 
 class AdminUsername(Resource):
 
@@ -153,12 +167,3 @@ class AdminUsername(Resource):
 class AdminsList(Resource):
     def get(self):
         return {'admins': [admin.json() for admin in AdminModel.query.all()]}
-
-
-class AdminBooklistsList(Resource):
-    def get(self, code):
-        admin = AdminModel.find_by_code(code)
-
-        if admin:
-            return {"message": [booklist.json() for booklist in admin.booklists]}
-        return {"message": f"Admin {code} does not exist."}, 404

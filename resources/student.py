@@ -213,7 +213,7 @@ class StudentRegBooklist(Resource):
         return {"message": f"booklist {name} does not exist."}, 404
 
 
-class StudentDeleteBooklist(Resource):
+class StudentBooklist(Resource):
 
     def delete(self, code: str, name: str):
         # if booklist and student exist, delete the booklist
@@ -228,6 +228,20 @@ class StudentDeleteBooklist(Resource):
                     student.save_to_db()
                     return {"message": f"Booklist {booklist.name} removed."}, 200
                 return {"message": f"Student {code} not in {booklist}"}, 404
+            return {"message": f"Student {code} does not exist."}, 404
+        return {"message": f"Booklist {booklist} does not exist."}, 404
+
+    def get(self, code: str, name: str):
+        # if booklist and student exist, delete the booklist
+        booklist = BooklistModel.find_by_name(name)
+        if booklist:
+            student = StudentModel.find_by_code(code)
+            if student:
+                # make sure the booklist isn't already removed
+                if booklist in student.booklists:
+                    print(f"#######{booklist.json()}")
+                    return {"booklist": booklist.json()}, 200
+                return {"message": f"Booklist {booklist.name} not found."}, 404
             return {"message": f"Student {code} does not exist."}, 404
         return {"message": f"Booklist {booklist} does not exist."}, 404
 

@@ -5,16 +5,16 @@ from flask_restful import Api
 from flask_jwt import JWT
 
 from resources.admin import AdminRegister, AdminsList, AdminUsername, AdminCode, AdminRegBooklist, \
-    AdminDeleteBooklist, AdminBooklistsList
+    AdminBooklist, AdminBooklistsList
 from resources.booklist import BooklistRegister, BooklistName, BooklistList
 from resources.course import CourseRegister, CourseCode, CoursesList
 from resources.major import MajorRegister, MajorName, MajorsList
 from resources.professor import ProfessorRegister, ProfessorsList, ProfessorUsername, ProfessorCode, \
     ProfessorRegCourse, ProfessorDeleteCourse, ProfessorCoursesList, ProfessorRegBooklist, \
-    ProfessorDeleteBooklist, ProfessorBooklistsList
+    ProfessorBooklist, ProfessorBooklistsList
 from resources.student import StudentRegister, StudentsList, StudentUsername, StudentCode, \
     StudentRegCourse, StudentCoursesList, StudentDeleteCourse, StudentRegMajor, StudentMajorsList, \
-    StudentDeleteMajor, StudentRegBooklist, StudentBooklistsList, StudentDeleteBooklist
+    StudentDeleteMajor, StudentRegBooklist, StudentBooklistsList, StudentBooklist
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -58,7 +58,7 @@ api.add_resource(StudentRegMajor, '/students/<int:code>/majors/')
 api.add_resource(StudentRegBooklist, '/students/<int:code>/booklists/')
 api.add_resource(StudentDeleteCourse, '/students/<int:code>/courses/<string:course_code>')
 api.add_resource(StudentDeleteMajor, '/students/<int:code>/majors/<string:name>')
-api.add_resource(StudentDeleteBooklist, '/students/<int:code>/booklists/<string:name>')
+api.add_resource(StudentBooklist, '/students/<int:code>/booklists/<string:name>')
 api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
 api.add_resource(ProfessorCode, '/professors/<int:code>')
@@ -66,7 +66,7 @@ api.add_resource(ProfessorCoursesList, '/professors/<int:code>/courses/')
 api.add_resource(ProfessorRegBooklist, '/professors/<int:code>/booklists/')
 api.add_resource(ProfessorRegCourse, '/professors/<int:code>/courses/')
 api.add_resource(ProfessorDeleteCourse, '/professors/<int:code>/courses/<string:course_code>')
-api.add_resource(ProfessorDeleteBooklist, '/professors/<int:code>/booklists/<string:name>')
+api.add_resource(ProfessorBooklist, '/professors/<int:code>/booklists/<string:name>')
 api.add_resource(ProfessorBooklistsList, '/professors/<int:code>/booklists/')
 api.add_resource(ProfessorsList, '/professorslist/')
 api.add_resource(ProfessorRegister, '/professors/')
@@ -74,7 +74,7 @@ api.add_resource(AdminUsername, '/admins/<string:username>')
 api.add_resource(AdminCode, '/admins/<int:code>')
 api.add_resource(AdminsList, '/adminlist/')
 api.add_resource(AdminRegBooklist, '/admins/<int:code>/booklists/')
-api.add_resource(AdminDeleteBooklist, '/admins/<int:code>/booklists/<string:name>')
+api.add_resource(AdminBooklist, '/admins/<int:code>/booklists/<string:name>')
 api.add_resource(AdminBooklistsList, '/admins/<int:code>/booklists/')
 api.add_resource(AdminRegister, '/admins/')
 api.add_resource(CourseRegister, '/courses/')
