@@ -7,7 +7,8 @@ from flask_jwt import JWT
 from resources.admin import AdminRegister, AdminsList, AdminUsername, AdminCode
 from resources.course import CourseRegister, CourseCode, CoursesList
 from resources.major import MajorRegister, MajorName, MajorsList
-from resources.professor import ProfessorRegister, ProfessorsList, ProfessorUsername, ProfessorCode
+from resources.professor import ProfessorRegister, ProfessorsList, ProfessorUsername, ProfessorCode, \
+    ProfessorRegCourse, ProfessorDeleteCourse, ProfessorCoursesList
 from resources.student import StudentRegister, StudentsList, StudentUsername, StudentCode, \
     StudentRegCourse, StudentCoursesList, StudentDeleteCourse, StudentRegMajor, StudentMajorsList, \
     StudentDeleteMajor
@@ -55,6 +56,9 @@ api.add_resource(StudentDeleteMajor, '/students/<int:code>/majors/<string:name>'
 api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
 api.add_resource(ProfessorCode, '/professors/<int:code>')
+api.add_resource(ProfessorCoursesList, '/professors/<int:code>/courses/')
+api.add_resource(ProfessorRegCourse, '/professors/<int:code>/courses/')
+api.add_resource(ProfessorDeleteCourse, '/professors/<int:code>/courses/<string:course_code>')
 api.add_resource(ProfessorsList, '/professorslist/')
 api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminUsername, '/admins/<string:username>')

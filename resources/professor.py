@@ -1,6 +1,7 @@
 import copy
 from flask_restful import Resource, reqparse
 
+from models.course_model import CourseModel
 from models.user_model import ProfessorModel, UserModel
 from resources.user_parser import UserParser
 
@@ -86,6 +87,49 @@ class ProfessorCode(Resource):
             return {'message': 'Professor deleted.'}, 200
         return {}, 204
 
+class ProfessorRegCourse(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('course_code', type=str, required=True)
+
+    def post(self, code):
+
+        course_code = ProfessorRegCourse.parser.parse_args()['course_code']
+
+        course = CourseModel.find_by_code(course_code)
+        if course:
+            professor = UserModel.find_by_code(code)
+            if professor:
+
+                # make sure the course isn't already added
+                if course in professor.courses:
+                    return {"message": f"Course {course.course_code} already added."}, 200
+
+                professor.courses.append(course)
+
+                professor.save_to_db()
+                return {"message": "Course added successfully."}, 201
+
+            return {"message": f"Professor {code} does not exist."}, 404
+        return {"message": f"Course {course_code} does not exist."}, 404
+
+
+class ProfessorDeleteCourse(Resource):
+
+    def delete(self, code: str, course_code: str):
+        # if course and professor exist, add the cours
+        course = CourseModel.find_by_code(course_code)
+
+        if course:
+            professor = UserModel.find_by_code(code)
+            if professor:
+                # make sure the course isn't already removed
+                if course in professor.courses:
+                    professor.courses.remove(course)
+                    professor.save_to_db()
+                    return {"message": f"Course {course.course_code} removed."}, 200
+                return {"message": f"Professor {code} not in {course_code}"}, 404
+            return {"message": f"Professor {code} does not exist."}, 404
+        return {"message": f"Course {course_code} does not exist."}, 404
 
 class ProfessorUsername(Resource):
 
@@ -100,3 +144,12 @@ class ProfessorUsername(Resource):
 class ProfessorsList(Resource):
     def get(self):
         return {'professors': [professor.json() for professor in ProfessorModel.query.all()]}
+
+
+class ProfessorCoursesList(Resource):
+    def get(self, code):
+        professor = ProfessorModel.find_by_code(code)
+
+        if professor:
+            return {"message": [course.json() for course in professor.courses]}
+        return {"message": f"Professor {code} does not exist."}, 404

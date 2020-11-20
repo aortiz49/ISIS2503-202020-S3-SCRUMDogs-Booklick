@@ -107,13 +107,24 @@ class StudentModel(UserModel):
 
 
 class ProfessorModel(UserModel):
-    _tablename_ = 'professor'
+    professor_courses_table = db.Table('professor_courses', db.Model.metadata,
+                                       db.Column('professor_id', db.Integer,
+                                                 db.ForeignKey('professor.id')),
+                                       db.Column('course_id', db.Integer,
+                                                 db.ForeignKey('course.id'))
+                                       )
+
+    __tablename__ = 'professor'
     id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     password = db.Column(db.String(100))
     description = db.Column(db.String(500))
     picture = db.Column(db.String(100))
+
+    courses = db.relationship("CourseModel",
+                              secondary=professor_courses_table,
+                              backref=db.backref('professors', lazy=True))
 
     _mapper_args_ = {
         'polymorphic_identity': 'professor',

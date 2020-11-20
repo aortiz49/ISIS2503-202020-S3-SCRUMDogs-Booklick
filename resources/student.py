@@ -112,7 +112,7 @@ class StudentRegCourse(Resource):
 
                 # make sure the course isn't already added
                 if course in student.courses:
-                    return {"message": f"Course {course.code} already added."}, 200
+                    return {"message": f"Course {course.course_code} already added."}, 200
 
                 student.courses.append(course)
 
@@ -120,7 +120,7 @@ class StudentRegCourse(Resource):
                 return {"message": "Course added successfully."}, 201
 
             return {"message": f"Student {code} does not exist."}, 404
-        return {"message": f"course {course_code} does not exist."}, 404
+        return {"message": f"Course {course_code} does not exist."}, 404
 
 
 class StudentDeleteCourse(Resource):

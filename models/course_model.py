@@ -15,7 +15,7 @@ class CourseModel(db.Model):
         self.description = description
 
     def json(self):
-        return {'name': self.name, 'code': self.course_code, 'description': self.description}
+        return {'name': self.name, 'course_code': self.course_code, 'description': self.description}
 
     @classmethod
     def find_by_name(cls, name: str):
