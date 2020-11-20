@@ -28,6 +28,11 @@ app.app_context().push()
 def about():
     return render_template('index.html')
 
+@app.route('/login')
+def about():
+    return render_template('login.html')
+
+
 
 
 limiter = Limiter(
