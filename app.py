@@ -12,7 +12,7 @@ from resources.professor import ProfessorRegister, ProfessorsList, ProfessorUser
     ProfessorRegCourse, ProfessorDeleteCourse, ProfessorCoursesList
 from resources.student import StudentRegister, StudentsList, StudentUsername, StudentCode, \
     StudentRegCourse, StudentCoursesList, StudentDeleteCourse, StudentRegMajor, StudentMajorsList, \
-    StudentDeleteMajor, StudentRegBooklist, StudentBooklistsList
+    StudentDeleteMajor, StudentRegBooklist, StudentBooklistsList, StudentDeleteBooklist
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -56,6 +56,7 @@ api.add_resource(StudentRegMajor, '/students/<int:code>/majors/')
 api.add_resource(StudentRegBooklist, '/students/<int:code>/booklists/')
 api.add_resource(StudentDeleteCourse, '/students/<int:code>/courses/<string:course_code>')
 api.add_resource(StudentDeleteMajor, '/students/<int:code>/majors/<string:name>')
+api.add_resource(StudentDeleteBooklist, '/students/<int:code>/booklists/<string:name>')
 api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
 api.add_resource(ProfessorCode, '/professors/<int:code>')
