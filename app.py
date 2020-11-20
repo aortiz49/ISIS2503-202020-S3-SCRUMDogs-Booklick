@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_jwt_extended import (
     JWTManager, jwt_required, get_jwt_identity, get_jwt_claims
 )
@@ -22,6 +22,12 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'jose'
 api = Api(app)
 app.app_context().push()
+
+@app.route('/')
+def about():
+    return render_template('index.html')
+
+
 
 limiter = Limiter(
     app,

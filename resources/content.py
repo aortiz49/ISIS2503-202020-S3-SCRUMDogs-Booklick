@@ -23,7 +23,6 @@ with app.app_context():
 
 
 class Content(Resource):
-    decorators = [limiter.limit("5/10seconds")]
 
     parser = reqparse.RequestParser()
 
@@ -36,6 +35,7 @@ class Content(Resource):
     parser.add_argument('imageURL', type=str, required=True, help="This field cannot be blank")
     parser.add_argument('documentURL', type=str, required=True, help="This field cannot be blank")
     parser.add_argument('interests', type=list, location='json', required=True, help="This field cannot be blank")
+    decorators = [limiter.limit("1/10seconds")]
 
     @jwt_required
     def get(self, id):
@@ -133,8 +133,6 @@ class ContentList(Resource):
     #     return service.get_data()
     #
     # decorators = [getLimiter.limit("2 per minute")]
-
-    decorators = [limiter.limit("5/10seconds")]
 
     @jwt_required
     @role_required("admin")
