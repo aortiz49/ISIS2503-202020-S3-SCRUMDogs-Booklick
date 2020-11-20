@@ -97,9 +97,8 @@ class ProfessorRegCourse(Resource):
 
         course = CourseModel.find_by_code(course_code)
         if course:
-            professor = UserModel.find_by_code(code)
+            professor = ProfessorModel.find_by_code(code)
             if professor:
-
                 # make sure the course isn't already added
                 if course in professor.courses:
                     return {"message": f"Course {course.course_code} already added."}, 200
@@ -120,7 +119,7 @@ class ProfessorDeleteCourse(Resource):
         course = CourseModel.find_by_code(course_code)
 
         if course:
-            professor = UserModel.find_by_code(code)
+            professor = ProfessorModel.find_by_code(code)
             if professor:
                 # make sure the course isn't already removed
                 if course in professor.courses:

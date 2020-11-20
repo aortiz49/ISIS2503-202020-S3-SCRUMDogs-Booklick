@@ -107,7 +107,7 @@ class StudentRegCourse(Resource):
 
         course = CourseModel.find_by_code(course_code)
         if course:
-            student = UserModel.find_by_code(code)
+            student = StudentModel.find_by_code(code)
             if student:
 
                 # make sure the course isn't already added
@@ -130,7 +130,7 @@ class StudentDeleteCourse(Resource):
         course = CourseModel.find_by_code(course_code)
 
         if course:
-            student = UserModel.find_by_code(code)
+            student = StudentModel.find_by_code(code)
             if student:
                 # make sure the course isn't already removed
                 if course in student.courses:
@@ -152,7 +152,7 @@ class StudentRegMajor(Resource):
 
         major = MajorModel.find_by_name(name)
         if major:
-            student = UserModel.find_by_code(code)
+            student = StudentModel.find_by_code(code)
             if student:
 
                 # make sure the course isn't already added
@@ -175,7 +175,7 @@ class StudentDeleteMajor(Resource):
         major = MajorModel.find_by_name(name)
 
         if major:
-            student = UserModel.find_by_code(code)
+            student = StudentModel.find_by_code(code)
             if student:
                 # make sure the major isn't already removed
                 if major in student.majors:
