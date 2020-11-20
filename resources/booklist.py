@@ -2,7 +2,7 @@ import copy
 
 from flask_restful import Resource, reqparse
 
-from models.booklist import BooklistModel
+from models.booklist_model import BooklistModel
 from models.major_model import MajorModel
 
 

@@ -2,6 +2,8 @@ import copy
 from flask_restful import Resource, reqparse
 
 from models.course_model import CourseModel
+from models.booklist_model import BooklistModel
+
 from models.user_model import ProfessorModel, UserModel
 from resources.user_parser import UserParser
 
@@ -130,6 +132,49 @@ class ProfessorDeleteCourse(Resource):
             return {"message": f"Professor {code} does not exist."}, 404
         return {"message": f"Course {course_code} does not exist."}, 404
 
+class ProfessorRegBooklist(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', type=str, required=True)
+
+    def post(self, code):
+
+        name = ProfessorRegBooklist.parser.parse_args()['name']
+
+        booklist = BooklistModel.find_by_name(name)
+        if booklist:
+            Professor = ProfessorModel.find_by_code(code)
+            if Professor:
+
+                # make sure the booklist isn't already added
+                if booklist in Professor.booklists:
+                    return {"message": f"Booklist {booklist.name} already added."}, 200
+
+                Professor.booklists.append(booklist)
+                Professor.save_to_db()
+                return {"message": "Booklist added successfully."}, 201
+
+            return {"message": f"Professor {code} does not exist."}, 404
+        return {"message": f"booklist {name} does not exist."}, 404
+
+
+class ProfessorDeleteBooklist(Resource):
+
+    def delete(self, code: str, name: str):
+        # if booklist and Professor exist, delete the booklist
+        booklist = BooklistModel.find_by_name(name)
+
+        if booklist:
+            professor = ProfessorModel.find_by_code(code)
+            if professor:
+                # make sure the booklist isn't already removed
+                if booklist in professor.booklists:
+                    professor.booklists.remove(booklist)
+                    professor.save_to_db()
+                    return {"message": f"Booklist {booklist.name} removed."}, 200
+                return {"message": f"Professor {code} not in {booklist}"}, 404
+            return {"message": f"Professor {code} does not exist."}, 404
+        return {"message": f"Booklist {booklist} does not exist."}, 404
+
 class ProfessorUsername(Resource):
 
     def get(self, username: str):
@@ -151,4 +196,12 @@ class ProfessorCoursesList(Resource):
 
         if professor:
             return {"message": [course.json() for course in professor.courses]}
+        return {"message": f"Professor {code} does not exist."}, 404
+
+class ProfessorBooklistsList(Resource):
+    def get(self, code):
+        professor = ProfessorModel.find_by_code(code)
+
+        if professor:
+            return {"message": [booklist.json() for booklist in professor.booklists]}
         return {"message": f"Professor {code} does not exist."}, 404

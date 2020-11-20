@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify
 
-from models.booklist import BooklistModel
+from models.booklist_model import BooklistModel
 from models.course_model import CourseModel
 from models.major_model import MajorModel
 from models.user_model import UserModel, StudentModel

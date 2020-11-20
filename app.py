@@ -9,7 +9,8 @@ from resources.booklist import BooklistRegister, BooklistName, BooklistList
 from resources.course import CourseRegister, CourseCode, CoursesList
 from resources.major import MajorRegister, MajorName, MajorsList
 from resources.professor import ProfessorRegister, ProfessorsList, ProfessorUsername, ProfessorCode, \
-    ProfessorRegCourse, ProfessorDeleteCourse, ProfessorCoursesList
+    ProfessorRegCourse, ProfessorDeleteCourse, ProfessorCoursesList, ProfessorRegBooklist, \
+    ProfessorDeleteBooklist, ProfessorBooklistsList
 from resources.student import StudentRegister, StudentsList, StudentUsername, StudentCode, \
     StudentRegCourse, StudentCoursesList, StudentDeleteCourse, StudentRegMajor, StudentMajorsList, \
     StudentDeleteMajor, StudentRegBooklist, StudentBooklistsList, StudentDeleteBooklist
@@ -61,8 +62,11 @@ api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
 api.add_resource(ProfessorCode, '/professors/<int:code>')
 api.add_resource(ProfessorCoursesList, '/professors/<int:code>/courses/')
+api.add_resource(ProfessorRegBooklist, '/professors/<int:code>/booklists/')
 api.add_resource(ProfessorRegCourse, '/professors/<int:code>/courses/')
 api.add_resource(ProfessorDeleteCourse, '/professors/<int:code>/courses/<string:course_code>')
+api.add_resource(ProfessorDeleteBooklist, '/professors/<int:code>/booklists/<string:name>')
+api.add_resource(ProfessorBooklistsList, '/professors/<int:code>/booklists/')
 api.add_resource(ProfessorsList, '/professorslist/')
 api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminUsername, '/admins/<string:username>')
