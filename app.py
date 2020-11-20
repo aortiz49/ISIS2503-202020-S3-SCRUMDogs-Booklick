@@ -4,11 +4,13 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
 
-from resources.admin import AdminRegister, AdminList, AdminUsername, AdminCode
-from resources.course import CourseRegister, CourseCode, CourseList
-from resources.professor import ProfessorRegister, ProfessorList, ProfessorUsername, ProfessorCode
-from resources.student import StudentRegister, StudentList, StudentUsername, StudentCode, \
-    StudentRegCourse, StudentCoursesList, StudentCourse
+from resources.admin import AdminRegister, AdminsList, AdminUsername, AdminCode
+from resources.course import CourseRegister, CourseCode, CoursesList
+from resources.major import MajorRegister, MajorName, MajorsList
+from resources.professor import ProfessorRegister, ProfessorsList, ProfessorUsername, ProfessorCode
+from resources.student import StudentRegister, StudentsList, StudentUsername, StudentCode, \
+    StudentRegCourse, StudentCoursesList, StudentDeleteCourse, StudentRegMajor, StudentMajorsList, \
+    StudentDeleteMajor
 from security import authenticate, identity
 
 app = Flask(__name__)
@@ -41,31 +43,31 @@ api = Api(app)  # This will allow us to very easily. add our resources to the ap
 # This is going to tell our API that the resources we created are now going to be
 # accessible via our API
 
-
 api.add_resource(StudentUsername, '/students/<string:username>')
 api.add_resource(StudentCode, '/students/<int:code>')
-api.add_resource(StudentList, '/studentlist/')
+api.add_resource(StudentsList, '/studentslist/')
 api.add_resource(StudentCoursesList, '/students/<int:code>/courses/')
-api.add_resource(StudentCourse, '/students/<int:code>/courses/<string:course_code>')
-
-# Dish.restaurants.any(id=thisrestaurant.id)
+api.add_resource(StudentMajorsList, '/students/<int:code>/majors/')
+api.add_resource(StudentRegCourse, '/students/<int:code>/courses/')
+api.add_resource(StudentRegMajor, '/students/<int:code>/majors/')
+api.add_resource(StudentDeleteCourse, '/students/<int:code>/courses/<string:course_code>')
+api.add_resource(StudentDeleteMajor, '/students/<int:code>/majors/<string:name>')
+api.add_resource(StudentRegister, '/students/')
 api.add_resource(ProfessorUsername, '/professors/<string:username>')
 api.add_resource(ProfessorCode, '/professors/<int:code>')
-api.add_resource(ProfessorList, '/professorlist/')
-
+api.add_resource(ProfessorsList, '/professorslist/')
+api.add_resource(ProfessorRegister, '/professors/')
 api.add_resource(AdminUsername, '/admins/<string:username>')
 api.add_resource(AdminCode, '/admins/<int:code>')
-api.add_resource(AdminList, '/adminlist/')
-
-api.add_resource(CourseCode, '/courses/<string:course_code>')
-api.add_resource(CourseList, '/courselist/')
-
-api.add_resource(StudentRegister, '/students/')
-api.add_resource(ProfessorRegister, '/professors/')
+api.add_resource(AdminsList, '/adminlist/')
 api.add_resource(AdminRegister, '/admins/')
-api.add_resource(CourseRegister, '/courses/')  # ISIS2503
+api.add_resource(CourseRegister, '/courses/')
+api.add_resource(CourseCode, '/courses/<string:course_code>')
+api.add_resource(CoursesList, '/courseslist/')
+api.add_resource(MajorRegister, '/majors/')
+api.add_resource(MajorName, '/majors/<string:name>')
+api.add_resource(MajorsList, '/majorslist/')
 
-api.add_resource(StudentRegCourse, '/students/<int:code>/courses/')
 if __name__ == '__main__':
     from db import db
 

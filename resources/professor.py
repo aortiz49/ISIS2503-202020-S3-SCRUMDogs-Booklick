@@ -77,7 +77,7 @@ class ProfessorCode(Resource):
         if professor_to_delete:
             professor_to_delete.delete_from_db()
             return {'message': 'Professor deleted.'}, 200
-        return {'message': 'Nothing to delete.'}, 204
+        return {}, 204
 
 
 class ProfessorUsername(Resource):
@@ -90,6 +90,6 @@ class ProfessorUsername(Resource):
         return {'message': 'Professor not found.'}, 404
 
 
-class ProfessorList(Resource):
+class ProfessorsList(Resource):
     def get(self):
         return {'professors': [professor.json() for professor in ProfessorModel.query.all()]}

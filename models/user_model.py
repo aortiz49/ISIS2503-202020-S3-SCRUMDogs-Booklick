@@ -12,11 +12,6 @@
 
 from db import db
 
-association_table = db.Table('student_courses', db.Model.metadata,
-                             db.Column('student_id', db.Integer, db.ForeignKey('student.id')),
-                             db.Column('course_id', db.Integer, db.ForeignKey('course.id'))
-                             )
-
 
 class UserModel(db.Model):
     __tablename__ = 'booklick_user'
@@ -60,6 +55,18 @@ class UserModel(db.Model):
 
 
 class StudentModel(UserModel):
+    student_courses_table = db.Table('student_courses', db.Model.metadata,
+                                     db.Column('student_id', db.Integer,
+                                               db.ForeignKey('student.id')),
+                                     db.Column('course_id', db.Integer, db.ForeignKey('course.id'))
+                                     )
+
+    student_majors_table = db.Table('student_majors', db.Model.metadata,
+                                    db.Column('student_id', db.Integer,
+                                              db.ForeignKey('student.id')),
+                                    db.Column('major_id', db.Integer, db.ForeignKey('major.id'))
+                                    )
+
     __tablename__ = 'student'
     id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     first_name = db.Column(db.String(100))
@@ -69,8 +76,12 @@ class StudentModel(UserModel):
     picture = db.Column(db.String(100))
     semester = db.Column(db.Integer)
     courses = db.relationship("CourseModel",
-                              secondary=association_table,
+                              secondary=student_courses_table,
                               backref=db.backref('students', lazy=True))
+
+    majors = db.relationship("MajorModel",
+                             secondary=student_majors_table,
+                             backref=db.backref('students', lazy=True))
 
     __mapper_args__ = {
         'polymorphic_identity': 'student',

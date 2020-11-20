@@ -71,7 +71,7 @@ class CourseCode(Resource):
         if course_to_delete:
             course_to_delete.delete_from_db()
             return {'message': 'Course deleted.'}, 200
-        return {'message': 'Nothing to delete.'}, 204
+        return {}, 204
 
 
 class CourseName(Resource):
@@ -84,6 +84,6 @@ class CourseName(Resource):
         return {'message': 'Course not found.'}, 404
 
 
-class CourseList(Resource):
+class CoursesList(Resource):
     def get(self):
         return {'courses': [course.json() for course in CourseModel.query.all()]}

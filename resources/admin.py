@@ -77,7 +77,7 @@ class AdminCode(Resource):
         if admin_to_delete:
             admin_to_delete.delete_from_db()
             return {'message': 'Admin deleted.'}, 200
-        return {'message': 'Nothing to delete.'}, 204
+        return {}, 204
 
 
 class AdminUsername(Resource):
@@ -90,6 +90,6 @@ class AdminUsername(Resource):
         return {'message': 'Admin not found.'}, 404
 
 
-class AdminList(Resource):
+class AdminsList(Resource):
     def get(self):
         return {'admins': [admin.json() for admin in AdminModel.query.all()]}

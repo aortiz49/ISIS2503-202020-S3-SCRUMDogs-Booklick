@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import jsonify
 
 from models.course_model import CourseModel
+from models.major_model import MajorModel
 from models.user_model import UserModel, StudentModel
 from resources.user_parser import UserParser
 import copy
@@ -86,7 +87,7 @@ class StudentCode(Resource):
         if student_to_delete:
             student_to_delete.delete_from_db()
             return {'message': 'Student deleted.'}, 200
-        return {'message': 'Nothing to delete.'}, 204
+        return {}, 204
 
 
 class StudentRegCourse(Resource):
@@ -115,7 +116,7 @@ class StudentRegCourse(Resource):
         return {"message": f"course {course_code} does not exist."}, 404
 
 
-class StudentCourse(Resource):
+class StudentDeleteCourse(Resource):
 
     def delete(self, code: str, course_code: str):
         # if course and student exist, add the cours
@@ -127,10 +128,56 @@ class StudentCourse(Resource):
                 # make sure the course isn't already removed
                 if course in student.courses:
                     student.courses.remove(course)
+                    student.save_to_db()
                     return {"message": f"Course {course.course_code} removed."}, 200
                 return {"message": f"Student {code} not in {course_code}"}, 404
             return {"message": f"Student {code} does not exist."}, 404
         return {"message": f"Course {course_code} does not exist."}, 404
+
+
+class StudentRegMajor(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', type=str, required=True)
+
+    def post(self, code):
+
+        name = StudentRegMajor.parser.parse_args()['name']
+
+        major = MajorModel.find_by_name(name)
+        if major:
+            student = UserModel.find_by_code(code)
+            if student:
+
+                # make sure the course isn't already added
+                if major in student.majors:
+                    return {"message": f"Major {major.name} already added."}, 200
+
+                student.majors.append(major)
+
+                student.save_to_db()
+                return {"message": "Major added successfully."}, 201
+
+            return {"message": f"Student {code} does not exist."}, 404
+        return {"message": f"Major {name} does not exist."}, 404
+
+
+class StudentDeleteMajor(Resource):
+
+    def delete(self, code: str, name: str):
+        # if major and student exist, add the major
+        major = MajorModel.find_by_name(name)
+
+        if major:
+            student = UserModel.find_by_code(code)
+            if student:
+                # make sure the major isn't already removed
+                if major in student.majors:
+                    major.students.remove(student)
+                    student.save_to_db()
+                    return {"message": f"Course {major.name} removed."}, 200
+                return {"message": f"Student {code} not in {major}"}, 404
+            return {"message": f"Student {code} does not exist."}, 404
+        return {"message": f"Course {major} does not exist."}, 404
 
 
 class StudentUsername(Resource):
@@ -143,7 +190,7 @@ class StudentUsername(Resource):
         return {'message': 'Student not found.'}, 404
 
 
-class StudentList(Resource):
+class StudentsList(Resource):
     def get(self):
         return {'students': [student.json() for student in StudentModel.query.all()]}
 
@@ -157,3 +204,10 @@ class StudentCoursesList(Resource):
         return {"message": f"Student {code} does not exist."}, 404
 
 
+class StudentMajorsList(Resource):
+    def get(self, code):
+        student = StudentModel.find_by_code(code)
+
+        if student:
+            return {"message": [major.json() for major in student.majors]}
+        return {"message": f"Student {code} does not exist."}, 404
