@@ -11,15 +11,8 @@ from resources.admin import AdminUsername, AdminCode, AdminsList, AdminRegister,
     AdminBooklist, AdminBooklistsList
 from resources.booklist import BookListRegContent, BooklistRegister, BooklistContentList, \
     BooklistName, BooklistList
-from resources.course import CourseRegister, CourseCode, CoursesList
-from resources.major import MajorRegister, MajorName, MajorsList
-from resources.professor import ProfessorRegister, ProfessorUsername, ProfessorCode, \
-    ProfessorCoursesList, ProfessorRegBooklist, ProfessorRegCourse, ProfessorDeleteCourse, \
-    ProfessorBooklist, ProfessorBooklistsList, ProfessorsList
 
-from resources.student import StudentRegister, StudentCode, StudentsList, StudentBooklistsList, \
-    StudentBooklist, StudentRegBooklist, StudentRegCourse, StudentCoursesList, StudentDeleteCourse, \
-    StudentUsername, StudentMajorsList, StudentRegMajor, StudentDeleteMajor
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -32,7 +25,7 @@ app.app_context().push()
 limiter = Limiter(
     app,
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["500 per day", "500 per hour"]
 )
 
 app.config[
@@ -50,7 +43,7 @@ def add_claims_to_access_token(user):
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
-    return user.username
+    return user.code
 
 
 # This method will check if a token is blacklisted, and will be called automatically when blacklist is enabled
@@ -122,6 +115,15 @@ def protected():
 
 from resources.content import ContentList, Content, ContentByInterests, ContentFile
 from security import Login, Logout, TokenRefresh
+from resources.course import CourseRegister, CourseCode, CoursesList
+from resources.major import MajorRegister, MajorName, MajorsList
+from resources.professor import ProfessorRegister, ProfessorUsername, ProfessorCode, \
+    ProfessorCoursesList, ProfessorRegBooklist, ProfessorRegCourse, ProfessorDeleteCourse, \
+    ProfessorBooklist, ProfessorBooklistsList, ProfessorsList
+
+from resources.student import StudentRegister, StudentCode, StudentsList, StudentBooklistsList, \
+    StudentBooklist, StudentRegBooklist, StudentRegCourse, StudentCoursesList, StudentDeleteCourse, \
+    StudentUsername, StudentMajorsList, StudentRegMajor, StudentDeleteMajor
 
 api.add_resource(Content, '/content/<string:id>', '/content/')
 api.add_resource(ContentList, '/contents/')

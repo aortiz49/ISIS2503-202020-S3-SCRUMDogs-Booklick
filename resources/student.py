@@ -1,7 +1,8 @@
+from flask_cors import cross_origin, CORS
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from flask import jsonify
-
+from flask import current_app as app
 from models.booklist_model import BooklistModel
 from models.course_model import CourseModel
 from models.major_model import MajorModel
@@ -10,12 +11,14 @@ import copy
 
 from resources.user_parser import UserParser
 
+with app.app_context():
+    cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 class StudentRegister(Resource):
     student_parser = reqparse.RequestParser()
     student_parser.add_argument('semester', type=int, required=True,
                                 help="Must have a semester.")
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def post(self):
 
         data = UserParser.parser.parse_args()
@@ -41,14 +44,14 @@ class StudentRegister(Resource):
 
 
 class StudentCode(Resource):
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, code: int):
         # only search students
         student = StudentModel.find_by_code(code)
         if student:
             return student.json(), 200
         return {'message': 'Student not found.'}, 404
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def put(self, code):
 
         # This parser will be used to update fields that can me modifiable
@@ -91,7 +94,7 @@ class StudentCode(Resource):
 
         student.save_to_db()
         return student.json(), 200
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def delete(self, code):
         student_to_delete = StudentModel.find_by_code(code)
         if student_to_delete:
@@ -103,7 +106,7 @@ class StudentCode(Resource):
 class StudentRegCourse(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('course_code', type=str, required=True)
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def post(self, code):
 
         course_code = StudentRegCourse.parser.parse_args()['course_code']
@@ -127,7 +130,7 @@ class StudentRegCourse(Resource):
 
 
 class StudentDeleteCourse(Resource):
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def delete(self, code: str, course_code: str):
         # if course and student exist, add the cours
         course = CourseModel.find_by_code(course_code)
@@ -148,7 +151,7 @@ class StudentDeleteCourse(Resource):
 class StudentRegMajor(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('name', type=str, required=True)
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def post(self, code):
 
         name = StudentRegMajor.parser.parse_args()['name']
@@ -172,7 +175,7 @@ class StudentRegMajor(Resource):
 
 
 class StudentDeleteMajor(Resource):
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def delete(self, code: str, name: str):
         # if major and student exist, add the major
         major = MajorModel.find_by_name(name)
@@ -192,7 +195,7 @@ class StudentDeleteMajor(Resource):
 class StudentRegBooklist(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('name', type=str, required=True)
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def post(self, code):
 
         name = StudentRegBooklist.parser.parse_args()['name']
@@ -215,7 +218,7 @@ class StudentRegBooklist(Resource):
 
 
 class StudentBooklist(Resource):
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def delete(self, code: str, name: str):
         # if booklist and student exist, delete the booklist
         booklist = BooklistModel.find_by_name(name)
@@ -232,6 +235,7 @@ class StudentBooklist(Resource):
             return {"message": f"Student {code} does not exist."}, 404
         return {"message": f"Booklist {booklist} does not exist."}, 404
 
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, code: str, name: str):
         # if booklist and student exist, delete the booklist
         booklist = BooklistModel.find_by_name(name)
@@ -248,7 +252,7 @@ class StudentBooklist(Resource):
 
 
 class StudentUsername(Resource):
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, username: str):
         # only search students
         student = StudentModel.find_by_username(username)
@@ -258,12 +262,13 @@ class StudentUsername(Resource):
 
 
 class StudentsList(Resource):
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self):
         return {'students': [student.json() for student in StudentModel.query.all()]}
 
 
 class StudentCoursesList(Resource):
-
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     @jwt_required
     def get(self, code):
         student = StudentModel.find_by_code(code)
@@ -276,6 +281,7 @@ class StudentCoursesList(Resource):
 class StudentMajorsList(Resource):
 
     @jwt_required
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, code):
         student = StudentModel.find_by_code(code)
 
@@ -285,8 +291,8 @@ class StudentMajorsList(Resource):
 
 
 class StudentBooklistsList(Resource):
-
     @jwt_required
+    @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, code):
         student = StudentModel.find_by_code(code)
 
