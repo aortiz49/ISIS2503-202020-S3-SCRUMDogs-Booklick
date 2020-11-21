@@ -1,3 +1,4 @@
+from flask_cors import cross_origin
 from flask import Flask, jsonify
 from flask_jwt_extended import (
     JWTManager, jwt_required, get_jwt_identity, get_jwt_claims
@@ -98,11 +99,8 @@ def revoked_token_callback():
 # JWT configuration ends
 
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
 
-
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 @app.route('/protected', methods=['GET'])
 @jwt_required
 def protected():
