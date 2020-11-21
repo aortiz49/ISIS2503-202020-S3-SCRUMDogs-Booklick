@@ -97,12 +97,6 @@ def revoked_token_callback():
 
 # JWT configuration ends
 
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
 @app.route('/protected', methods=['GET'])
 @jwt_required
 def protected():
