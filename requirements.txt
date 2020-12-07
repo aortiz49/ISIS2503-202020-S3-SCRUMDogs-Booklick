@@ -22,3 +22,4 @@ urllib3==1.26.2
 Werkzeug==1.0.1
 uwsgi
 flask_cors
+psycopg2
