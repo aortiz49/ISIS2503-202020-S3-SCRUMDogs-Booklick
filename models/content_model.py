@@ -4,7 +4,7 @@ from db import db
 class CommentModel(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DATETIME())
+    date = db.Column(db.TIMESTAMP())
     text = db.Column(db.String(130))
 
     content_id = db.Column(db.Integer, db.ForeignKey('contents.id'))
