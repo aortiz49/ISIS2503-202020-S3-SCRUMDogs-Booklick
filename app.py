@@ -8,11 +8,6 @@ from flask_limiter.util import get_remote_address
 from flask_restful import Api
 
 from blacklist import BLACKLIST
-from resources.admin import AdminUsername, AdminCode, AdminsList, AdminRegister, AdminRegBooklist, \
-    AdminBooklist, AdminBooklistsList
-from resources.booklist import BookListRegContent, BooklistRegister, BooklistContentList, \
-    BooklistName, BooklistList
-
 
 
 app = Flask(__name__)
@@ -20,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
-app.secret_key = 'jose'
+app.config['SECRET_KEY'] = 'L2SKy23OA5BhHcyta0lY4b5VKTCIrQN7'
 api = Api(app)
 app.app_context().push()
 
@@ -108,7 +103,6 @@ def protected():
     }
     return jsonify(ret), 200
 
-
 from resources.content import ContentList, Content, ContentByInterests, ContentFile
 from security import Login, Logout, TokenRefresh
 from resources.course import CourseRegister, CourseCode, CoursesList
@@ -116,10 +110,12 @@ from resources.major import MajorRegister, MajorName, MajorsList
 from resources.professor import ProfessorRegister, ProfessorUsername, ProfessorCode, \
     ProfessorCoursesList, ProfessorRegBooklist, ProfessorRegCourse, ProfessorDeleteCourse, \
     ProfessorBooklist, ProfessorBooklistsList, ProfessorsList
-
 from resources.student import StudentRegister, StudentCode, StudentsList, StudentBooklistsList, \
-    StudentBooklist, StudentRegBooklist, StudentRegCourse, StudentCoursesList, StudentDeleteCourse, \
-    StudentUsername, StudentMajorsList, StudentRegMajor, StudentDeleteMajor
+    StudentBooklist, StudentRegBooklist, StudentRegCourse, StudentCoursesList, StudentDeleteCourse
+from resources.admin import AdminUsername, AdminCode, AdminsList, AdminRegister, AdminRegBooklist, \
+    AdminBooklist, AdminBooklistsList
+from resources.booklist import BookListRegContent, BooklistRegister, BooklistContentList, \
+    BooklistName, BooklistList
 
 api.add_resource(Content, '/content/<string:id>', '/content/')
 api.add_resource(ContentList, '/contents/')
@@ -175,6 +171,8 @@ api.add_resource(BooklistList, '/booklistslist/')
 
 if __name__ == '__main__':
     from db import db
+    from bkrypt import bcrypt
 
     db.init_app(app)
+    bcrypt.init_app(app)
     app.run(port=5000, debug=True)

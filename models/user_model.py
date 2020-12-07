@@ -11,7 +11,7 @@
 # =============================================================================
 
 from db import db
-
+from bkrypt import bcrypt
 
 class UserModel(db.Model):
     __tablename__ = 'booklick_user'
@@ -77,7 +77,8 @@ class AdminModel(UserModel):
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = password
+        self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
+        print("##### " + self.password)
         self.description = description
         self.picture = picture
         self.role = role
@@ -170,7 +171,8 @@ class StudentModel(UserModel):
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = password
+        self.password = self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
+        print("##### " + self.password)
         self.description = description
         self.picture = picture
         self.semester = semester
@@ -182,3 +184,5 @@ class StudentModel(UserModel):
                 'username': self.username, 'email': self.email, 'code': self.code,
                 'password': self.password, 'description': self.description,
                 'picture': self.picture, 'semester': self.semester}
+
+

@@ -279,7 +279,6 @@ class StudentCoursesList(Resource):
 
 
 class StudentMajorsList(Resource):
-
     @jwt_required
     @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def get(self, code):

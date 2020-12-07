@@ -26,6 +26,7 @@ class AdminRegister(Resource):
             return {"message": f"User with email: {data['email']} already exists."}, 400
 
         user = AdminModel(**data)  # unpacking the dictionary
+        print(user.password)
         user.save_to_db()
 
         return {"message": f"Admin was created successfully."}, 201
