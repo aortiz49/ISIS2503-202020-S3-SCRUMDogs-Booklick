@@ -77,8 +77,7 @@ class AdminModel(UserModel):
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
-        print("##### " + self.password)
+        self.password = bcrypt.generate_password_hash(password,10).decode('UTF-8')
         self.description = description
         self.picture = picture
         self.role = role
@@ -86,7 +85,7 @@ class AdminModel(UserModel):
     def json(self):
         return {'first_name': self.first_name, 'last_name': self.last_name,
                 'username': self.username, 'email': self.email, 'code': self.code,
-                'password': self.password, 'description': self.description, 'picture': self.picture}
+                'description': self.description, 'picture': self.picture}
 
 
 class ProfessorModel(UserModel):
@@ -119,7 +118,7 @@ class ProfessorModel(UserModel):
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = password
+        self.password = bcrypt.generate_password_hash(password,10).decode('UTF-8')
         self.description = description
         self.picture = picture
         self.role = role
@@ -129,7 +128,7 @@ class ProfessorModel(UserModel):
     def json(self):
         return {'first_name': self.first_name, 'last_name': self.last_name,
                 'username': self.username, 'email': self.email, 'code': self.code,
-                'password': self.password, 'description': self.description, 'picture': self.picture}
+                'description': self.description, 'picture': self.picture}
 
 
 class StudentModel(UserModel):
@@ -171,8 +170,7 @@ class StudentModel(UserModel):
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
-        print("##### " + self.password)
+        self.password = bcrypt.generate_password_hash(password, 10).decode('UTF-8')
         self.description = description
         self.picture = picture
         self.semester = semester
@@ -182,7 +180,7 @@ class StudentModel(UserModel):
     def json(self):
         return {'first_name': self.first_name, 'last_name': self.last_name,
                 'username': self.username, 'email': self.email, 'code': self.code,
-                'password': self.password, 'description': self.description,
+                 'description': self.description,
                 'picture': self.picture, 'semester': self.semester}
 
 

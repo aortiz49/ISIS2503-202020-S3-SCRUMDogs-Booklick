@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, get_jwt_claims, create_refre
     jwt_required, get_raw_jwt, \
     jwt_refresh_token_required, get_jwt_identity
 
+from bkrypt import bcrypt
 from blacklist import BLACKLIST
 from functools import update_wrapper
 from flask_restful import Resource, reqparse
@@ -62,18 +63,23 @@ class Login(Resource):
     @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
     def post(self):
         data = Login.parser.parse_args()
-
         user = UserModel.find_by_username(data['username'])
+        if not user:
+            return {"message": "User does not exist."}, 404
 
-        if user and safe_str_cmp(user.password, data['password']):
-            access_token = create_access_token(identity=user, fresh=True)
-            refresh_token = create_refresh_token(user)
-            return {
-                       'access_token': access_token,
-                       'refresh_token': refresh_token
-                   }, 200
+        else:
+            stored_pass = user.password
+            input_pass = data['password']
 
-        return {"message": "Invalid Credentials!"}, 401
+            if bcrypt.check_password_hash(stored_pass, input_pass):
+                access_token = create_access_token(identity=user, fresh=True)
+                refresh_token = create_refresh_token(user)
+                return {
+                           'access_token': access_token,
+                           'refresh_token': refresh_token
+                       }, 200
+
+            return {"message": "Invalid Credentials!"}, 401
 
 
 class Logout(Resource):

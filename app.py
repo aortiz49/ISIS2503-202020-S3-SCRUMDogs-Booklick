@@ -25,25 +25,23 @@ limiter = Limiter(
     default_limits=["500 per day", "500 per hour"]
 )
 
-app.config[
-    'JWT_SECRET_KEY'] = 'jose'  # we can also use app.secret like before, Flask-JWT-Extended can recognize both
 app.config['JWT_BLACKLIST_ENABLED'] = True  # enable blacklist feature
-app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access',
-                                            'refresh']  # allow blacklisting for access and refresh tokens
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']  # allow blacklisting for access
+# and refresh tokens
 jwt = JWTManager(app)  # /auth
 
 
 @jwt.user_claims_loader
 def add_claims_to_access_token(user):
-    return user.role #TODO: figure this out
+    return user.role
 
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user.code
 
-
-# This method will check if a token is blacklisted, and will be called automatically when blacklist is enabled
+# This method will check if a token is blacklisted, and will be called automatically
+# when blacklist is enabled
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     return decrypted_token['jti'] in BLACKLIST
@@ -174,5 +172,6 @@ if __name__ == '__main__':
     from bkrypt import bcrypt
 
     db.init_app(app)
+    db.create_all()
     bcrypt.init_app(app)
     app.run(port=5000, debug=True)
