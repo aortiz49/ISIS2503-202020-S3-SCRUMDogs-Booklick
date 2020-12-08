@@ -22,7 +22,6 @@ class UserModel(db.Model):
     code = db.Column(db.Integer)
     booklists = db.relationship("BooklistModel")
     type = db.Column(db.String(100))
-
     role = db.Column(db.String(100))
 
     __mapper_args__ = {
@@ -71,13 +70,13 @@ class AdminModel(UserModel):
     }
 
     def _init_(self, username: str, email: str, code: int, first_name: str, last_name: str,
-               password: str, description: str, picture: str, role:str):
+               password: str, description: str, picture: str, role: str):
         self.username = username
         self.email = email
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = bcrypt.generate_password_hash(password,10).decode('UTF-8')
+        self.password = bcrypt.generate_password_hash(password, 10).decode('UTF-8')
         self.description = description
         self.picture = picture
         self.role = role
@@ -175,7 +174,6 @@ class StudentModel(UserModel):
         self.picture = picture
         self.semester = semester
         self.role = role
-
 
     def json(self):
         return {'first_name': self.first_name, 'last_name': self.last_name,
