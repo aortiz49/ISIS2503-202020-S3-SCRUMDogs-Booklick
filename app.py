@@ -12,7 +12,7 @@ from blacklist import BLACKLIST
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'sqlite:///data.db')
+    'DATA', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['SECRET_KEY'] = 'L2SKy23OA5BhHcyta0lY4b5VKTCIrQN7'
