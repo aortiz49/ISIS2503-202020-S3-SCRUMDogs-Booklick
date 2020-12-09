@@ -58,14 +58,14 @@ class UserModel(db.Model):
 
 
 class AdminModel(UserModel):
-    _tablename_ = 'admin'
+    __tablename__ = 'admin'
     id = db.Column(db.Integer, db.ForeignKey('booklick_user.id'), primary_key=True)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     description = db.Column(db.String(100))
     picture = db.Column(db.String(100))
 
-    _mapper_args_ = {
+    __mapper_args__ = {
         'polymorphic_identity': 'admin',
     }
 
@@ -86,7 +86,6 @@ class AdminModel(UserModel):
                 'username': self.username, 'email': self.email, 'code': self.code,
                 'description': self.description, 'picture': self.picture}
 
-
 class ProfessorModel(UserModel):
     professor_courses_table = db.Table('professor_courses', db.Model.metadata,
                                        db.Column('professor_id', db.Integer,
@@ -106,7 +105,7 @@ class ProfessorModel(UserModel):
                               secondary=professor_courses_table,
                               backref=db.backref('professors', lazy=True))
 
-    _mapper_args_ = {
+    __mapper_args__ = {
         'polymorphic_identity': 'professor',
     }
 
@@ -117,7 +116,7 @@ class ProfessorModel(UserModel):
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = bcrypt.generate_password_hash(password,10).decode('UTF-8')
+        self.password = bcrypt.generate_password_hash(password, 10).decode('UTF-8')
         self.description = description
         self.picture = picture
         self.role = role
