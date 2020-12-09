@@ -3,6 +3,7 @@ import copy
 from flask_cors import cross_origin
 from flask_restful import Resource, reqparse
 
+from bkrypt import bcrypt
 from models.booklist_model import BooklistModel
 from models.user_model import AdminModel, UserModel
 from resources.user_parser import UserParser
@@ -25,8 +26,10 @@ class AdminRegister(Resource):
         if UserModel.find_by_email(data['email']):
             return {"message": f"User with email: {data['email']} already exists."}, 400
 
+        temp_pass = bcrypt.generate_password_hash(data['password'], 10).decode('UTF-8')
+        data['password'] = temp_pass
+
         user = AdminModel(**data)  # unpacking the dictionary
-        print(user.password)
         user.save_to_db()
 
         return {"message": f"Admin was created successfully."}, 201

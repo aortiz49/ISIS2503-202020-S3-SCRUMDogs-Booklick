@@ -21,12 +21,11 @@ class UserModel(db.Model):
     email = db.Column(db.String(100))
     code = db.Column(db.Integer)
     booklists = db.relationship("BooklistModel")
-    type = db.Column(db.String(100))
     role = db.Column(db.String(100))
 
     __mapper_args__ = {
         'polymorphic_identity': 'booklick_user',
-        'polymorphic_on': type
+        'polymorphic_on': role
     }
 
     @classmethod
@@ -70,16 +69,15 @@ class AdminModel(UserModel):
     }
 
     def _init_(self, username: str, email: str, code: int, first_name: str, last_name: str,
-               password: str, description: str, picture: str, role: str):
+               password: str, description: str, picture: str):
         self.username = username
         self.email = email
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = bcrypt.generate_password_hash(password, 10).decode('UTF-8')
+        self.password = password
         self.description = description
         self.picture = picture
-        self.role = role
 
     def json(self):
         return {'first_name': self.first_name, 'last_name': self.last_name,
@@ -110,16 +108,15 @@ class ProfessorModel(UserModel):
     }
 
     def _init_(self, username: str, email: str, code: int, first_name: str, last_name: str,
-               password: str, description: str, picture: str, role:str):
+               password: str, description: str, picture: str):
         self.username = username
         self.email = email
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = bcrypt.generate_password_hash(password, 10).decode('UTF-8')
+        self.password = password
         self.description = description
         self.picture = picture
-        self.role = role
 
 
 
@@ -162,17 +159,16 @@ class StudentModel(UserModel):
     }
 
     def __init__(self, username: str, email: str, code: int, first_name: str, last_name: str,
-                 password: str, description: str, picture: str, semester: int, role:str):
+                 password: str, description: str, picture: str, semester: int):
         self.username = username
         self.email = email
         self.code = code
         self.first_name = first_name
         self.last_name = last_name
-        self.password = bcrypt.generate_password_hash(password, 10).decode('UTF-8')
+        self.password = password
         self.description = description
         self.picture = picture
         self.semester = semester
-        self.role = role
 
     def json(self):
         return {'first_name': self.first_name, 'last_name': self.last_name,

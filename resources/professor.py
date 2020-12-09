@@ -1,6 +1,7 @@
 import copy
 from flask_restful import Resource, reqparse
 
+from bkrypt import bcrypt
 from models.course_model import CourseModel
 from models.booklist_model import BooklistModel
 
@@ -26,6 +27,9 @@ class ProfessorRegister(Resource):
 
         if UserModel.find_by_email(data['email']):
             return {"message": f"User with email: {data['email']} already exists."}, 400
+
+        temp_pass = bcrypt.generate_password_hash(data['password'], 10).decode('UTF-8')
+        data['password'] = temp_pass
 
         user = ProfessorModel(**data)  # unpacking the dictionary
         user.save_to_db()

@@ -3,6 +3,8 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from flask import jsonify
 from flask import current_app as app
+
+from bkrypt import bcrypt
 from models.booklist_model import BooklistModel
 from models.course_model import CourseModel
 from models.major_model import MajorModel
@@ -36,6 +38,9 @@ class StudentRegister(Resource):
 
         if UserModel.find_by_email(data['email']):
             return {"message": f"User with email: {data['email']} already exists."}, 400
+
+        temp_pass = bcrypt.generate_password_hash(data['password'], 10).decode('UTF-8')
+        data['password'] = temp_pass
 
         user = StudentModel(**data)  # unpacking the dictionary
         user.save_to_db()
