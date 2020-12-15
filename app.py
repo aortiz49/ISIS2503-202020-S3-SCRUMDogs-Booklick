@@ -11,6 +11,8 @@ from werkzeug.utils import redirect
 from blacklist import BLACKLIST
 from authlib.integrations.flask_client import OAuth
 
+from models.user_model import UserModel
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///:memory:')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -48,7 +50,7 @@ jwt = JWTManager(app)  # /auth
 @app.route('/oauth_test_area')
 def hello_world():
     email = dict(session).get('email', None)
-    return f'Hello,{email}'
+    return {"email": email}
 
 
 @app.route('/login')
@@ -66,9 +68,14 @@ def authorize():
     user_info = resp.json()
     # do something with the token and profile
     session['email'] = user_info['email']
-    return redirect('/')
-
-
+    my_email = user_info['email']
+    usr = UserModel.find_by_email(my_email)
+    code = None
+    if usr:
+        return redirect('https://booklick.me/students/{{x}}'.format(x=code))
+    else:
+        return redirect('https://booklick.me/')
+        
 @app.route('/logout')
 def logout():
     for key in list(session.keys()):
@@ -166,8 +173,8 @@ api.add_resource(Content, '/content/<string:id>', '/content/')
 api.add_resource(ContentList, '/contents/')
 api.add_resource(ContentByInterests, '/interests/<string:key>')
 api.add_resource(ContentFile, '/upload/')
-#api.add_resource(Login, '/login/')
-#api.add_resource(Logout, '/logout/')
+# api.add_resource(Login, '/login/')
+# api.add_resource(Logout, '/logout/')
 api.add_resource(TokenRefresh, '/refresh/')
 
 api.add_resource(BookListRegContent, '/booklists/<string:name>/')
