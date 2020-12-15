@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, url_for, session, request
+from flask import Flask, jsonify, url_for, session
 from flask_jwt_extended import (
     JWTManager, jwt_required, get_jwt_identity, get_jwt_claims
 )
