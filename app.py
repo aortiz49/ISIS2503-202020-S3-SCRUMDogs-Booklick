@@ -72,7 +72,7 @@ def authorize():
     usr = UserModel.find_by_email(my_email)
     code = None
     if usr:
-        return redirect('https://booklick.me/students/'+usr.code)
+        return redirect('https://booklick.me/students/'+str(usr.code))
     else:
         return redirect('https://booklick.me/')
 
