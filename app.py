@@ -1,21 +1,36 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, url_for, session, request
 from flask_jwt_extended import (
     JWTManager, jwt_required, get_jwt_identity, get_jwt_claims
 )
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_restful import Api
+from werkzeug.utils import redirect
 
 from blacklist import BLACKLIST
-
+from authlib.integrations.flask_client import OAuth
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///:memory:')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['SECRET_KEY'] = 'L2SKy23OA5BhHcyta0lY4b5VKTCIrQN7'
 api = Api(app)
+oauth = OAuth(app)
+
+oauth.register(
+    name='google',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid email profile'},
+)
+
 app.app_context().push()
 
 limiter = Limiter(
@@ -30,6 +45,37 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']  # allow blackl
 jwt = JWTManager(app)  # /auth
 
 
+@app.route('/oauth_test_area')
+def hello_world():
+    email = dict(session).get('email', None)
+    return f'Hello,{email}'
+
+
+@app.route('/login')
+def login():
+    google = oauth.create_client('google')
+    redirect_uri = url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+@app.route('/authorize')
+def authorize():
+    google = oauth.create_client('google')
+    token = google.authorize_access_token()
+    resp = google.get('userinfo', token=token)
+    user_info = resp.json()
+    # do something with the token and profile
+    session['email'] = user_info['email']
+    return redirect('/')
+
+
+@app.route('/logout')
+def logout():
+    for key in list(session.keys()):
+        session.pop(key)
+    return redirect('/')
+
+
 @jwt.user_claims_loader
 def add_claims_to_access_token(user):
     return user.role
@@ -38,6 +84,7 @@ def add_claims_to_access_token(user):
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user.code
+
 
 # This method will check if a token is blacklisted, and will be called automatically
 # when blacklist is enabled
@@ -100,6 +147,7 @@ def protected():
     }
     return jsonify(ret), 200
 
+
 from resources.content import ContentList, Content, ContentByInterests, ContentFile
 from security import Login, Logout, TokenRefresh
 from resources.course import CourseRegister, CourseCode, CoursesList
@@ -118,8 +166,8 @@ api.add_resource(Content, '/content/<string:id>', '/content/')
 api.add_resource(ContentList, '/contents/')
 api.add_resource(ContentByInterests, '/interests/<string:key>')
 api.add_resource(ContentFile, '/upload/')
-api.add_resource(Login, '/login/')
-api.add_resource(Logout, '/logout/')
+#api.add_resource(Login, '/login/')
+#api.add_resource(Logout, '/logout/')
 api.add_resource(TokenRefresh, '/refresh/')
 
 api.add_resource(BookListRegContent, '/booklists/<string:name>/')
@@ -164,7 +212,6 @@ api.add_resource(MajorName, '/majors/<string:name>')
 api.add_resource(MajorsList, '/majorslist/')
 api.add_resource(BooklistName, '/booklists/<string:name>')
 api.add_resource(BooklistList, '/booklistslist/')
-
 
 if __name__ == '__main__':
     from db import db
