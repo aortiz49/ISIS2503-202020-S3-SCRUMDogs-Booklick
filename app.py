@@ -72,10 +72,10 @@ def authorize():
     usr = UserModel.find_by_email(my_email)
     code = None
     if usr:
-        return redirect('https://booklick.me/students/{{x}}'.format(x=code))
+        return redirect('https://booklick.me/students/'+usr.code)
     else:
         return redirect('https://booklick.me/')
-        
+
 @app.route('/logout')
 def logout():
     for key in list(session.keys()):
