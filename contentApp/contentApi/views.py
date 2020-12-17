@@ -19,7 +19,7 @@ class ContentViewSet(viewsets.ModelViewSet):
         cont = data['id']
         keys = data['interests']
 
-        url = 'http://127.0.0.1:8000/updateInterests/'
+        url = 'http://ec2-18-207-139-221.compute-1.amazonaws.com:8000/updateInterests'
         dict = {"content": cont, "interests": keys}
         requests.post(url, json=dict)
 
