@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Install Packages') {
       steps {
-        sh 'pip install --upgrade pip'
+        sh 'sudo pip install --upgrade pip'
       }
     }
 
