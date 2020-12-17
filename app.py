@@ -76,6 +76,7 @@ def authorize():
     else:
         return redirect('https://booklick.me/')
 
+
 @app.route('/logout')
 def logout():
     for key in list(session.keys()):
@@ -227,12 +228,4 @@ if __name__ == '__main__':
     db.init_app(app)
     db.create_all()
     bcrypt.init_app(app)
-    app.run(port=8080, debug=True)
-
-
-@app.before_first_request
-def create_tables():
-    from db import db
-    db.init_app(app)
-    db.create_all()
-
+    app.run(port=5000, debug=True)
